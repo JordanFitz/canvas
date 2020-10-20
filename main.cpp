@@ -32,6 +32,10 @@ int main(int argc, char** argv)
     image.src("W:\\pictures\\test4.jpg");
     Canvas canvas;
 
+    canvas.addEventListener("keypress", [](const sf::Event& event) {
+        printf("Key: %d\n", event.key.code);
+    });
+
     canvas.width(800);
     canvas.height(600);
 

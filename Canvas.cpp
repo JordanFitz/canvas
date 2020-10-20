@@ -337,6 +337,40 @@ void Canvas::initialize()
                 );
                 m_window->setView(sf::View(visibleArea));
             }
+
+            switch (event.type)
+            {
+            case sf::Event::Closed:
+                dispatchEvent("unload", event);
+                break;
+            case sf::Event::Resized:
+                dispatchEvent("resize", event);
+                break;
+            case sf::Event::KeyPressed:
+                dispatchEvent("keypress", event);
+                break;
+            case sf::Event::KeyReleased:
+                dispatchEvent("keyup", event);
+                break;
+            case sf::Event::MouseButtonPressed:
+                dispatchEvent("mousedown", event);
+                break;
+            case sf::Event::MouseButtonReleased:
+                dispatchEvent("mouseup", event);
+                break;
+            case sf::Event::MouseMoved:
+                dispatchEvent("mousemove", event);
+                break;
+            case sf::Event::MouseWheelScrolled:
+                dispatchEvent("wheel", event);
+                break;
+            case sf::Event::GainedFocus:
+                dispatchEvent("focus", event);
+                break;
+            case sf::Event::LostFocus:
+                dispatchEvent("blur", event);
+                break;
+            }
         }
 
         m_window->clear();
@@ -460,4 +494,35 @@ void Canvas::drawImage(const Image& image, float sx, float sy, float sWidth, flo
     m_window->draw(*sprite);
 
     sprite->setTextureRect(rect);
+}
+
+void Canvas::addEventListener(const char* _type, void (*handler)(const sf::Event&))
+{
+    std::string type(_type);
+    if (m_handlers.find(type) == m_handlers.end())
+    {
+        m_handlers.insert(
+            std::pair<std::string, std::vector<void (*)(const sf::Event&)>>
+            (type, std::vector<void (*)(const sf::Event&)>())
+        );
+    }
+
+    m_handlers.at(type).push_back(handler);
+}
+
+void Canvas::dispatchEvent(const char* _type, const sf::Event& event)
+{
+    std::string type(_type);
+
+    if (m_handlers.find(type) == m_handlers.end())
+    {
+        return;
+    }
+
+    auto handlers = m_handlers.at(type);
+    for (auto it = handlers.begin(); it < handlers.end(); it++)
+    {
+        auto handler = *it;
+        handler(event);
+    }
 }

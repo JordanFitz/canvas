@@ -33,8 +33,11 @@ public:
     void drawImage(const Image&, float, float, float, float, float, float, float, float);
 
     void initialize();
-    void hookUpdate(void (*proc)(Canvas*));
-    void hookRender(void (*proc)(Canvas*));
+    void hookUpdate(void (*)(Canvas*));
+    void hookRender(void (*)(Canvas*));
+
+    void addEventListener(const char*, void (*)(const sf::Event&));
+    void dispatchEvent(const char*, const sf::Event&);
 
 private:
     sf::RenderWindow* m_window;
@@ -51,6 +54,8 @@ private:
 
     void (*m_render)(Canvas*) = nullptr;
     void (*m_update)(Canvas*) = nullptr;
+
+    std::map<std::string, std::vector<void(*)(const sf::Event&)>> m_handlers;
 
     sf::Color _parseColor(std::string&);
     void _registerColor(const char*, const sf::Color&);
