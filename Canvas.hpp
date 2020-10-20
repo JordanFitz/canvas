@@ -31,6 +31,9 @@ public:
 
 private:
     sf::RenderWindow* m_window;
+    sf::RectangleShape* m_rectangle;
+
+    std::map<std::string, sf::Color> m_colorCache;
 
     std::string m_fillStyle, m_strokeStyle;
     sf::Color m_fillColor;
@@ -42,6 +45,7 @@ private:
     void (*m_render)(Canvas*) = nullptr;
     void (*m_update)(Canvas*) = nullptr;
 
-    sf::Color _parseStyle(std::string&);
+    sf::Color _parseColor(std::string&);
+    void _registerColor(const char*, const sf::Color&);
 };
 
