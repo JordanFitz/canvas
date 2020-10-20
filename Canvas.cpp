@@ -303,7 +303,9 @@ Canvas::Canvas() :
     m_height(150),
     m_lineWidth(1.0f),
     m_render(nullptr),
-    m_update(nullptr)
+    m_update(nullptr),
+    m_fillColor(sf::Color::Black),
+    m_strokeColor(sf::Color::Black)
 {
     m_rectangle = new sf::RectangleShape();
     m_window = new sf::RenderWindow(
@@ -691,6 +693,24 @@ void Canvas::fillText(const char* string, float x, float y)
 
     m_text->setFillColor(m_fillColor);
     m_text->setOutlineThickness(0.0f);
+
+    m_text->setPosition(sf::Vector2f(x, y));
+    m_text->setString(string);
+
+    m_window->draw(*m_text);
+}
+
+void Canvas::strokeText(const char* string, float x, float y)
+{
+    if (m_text == nullptr)
+    {
+        printf("Call to strokeText() with no font set.");
+        return;
+    }
+
+    m_text->setFillColor(sf::Color::Transparent);
+    m_text->setOutlineColor(m_strokeColor);
+    m_text->setOutlineThickness(m_lineWidth);
 
     m_text->setPosition(sf::Vector2f(x, y));
     m_text->setString(string);

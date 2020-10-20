@@ -45,6 +45,7 @@ public:
     std::string font() const;
 
     void fillText(const char*, float, float);
+    void strokeText(const char*, float, float);
 
 private:
     sf::RenderWindow* m_window;

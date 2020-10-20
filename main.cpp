@@ -26,8 +26,11 @@ void render(Canvas* canvas)
     canvas->strokeStyle("rgba(255, 0, 0, 0.5)");
     canvas->lineWidth(2);
     canvas->strokeRect(10, 10, 210, 210);
+    canvas->lineWidth(2);
+    canvas->strokeStyle("#fff");
+    canvas->strokeText("Text test", 10, 220);
     canvas->fillStyle("indianred");
-    canvas->fillText("Text test", 10, 220);
+    canvas->fillText("Text test", 10, 220);    
 }
 
 int main(int argc, char** argv)
@@ -36,7 +39,7 @@ int main(int argc, char** argv)
     Canvas canvas;
 
     canvas.loadFont("Arial", "W:\\dev\\canvas\\arial.ttf");
-    canvas.font("bold underline italic 25px Arial");
+    canvas.font("underline 45px Arial");
 
     canvas.addEventListener("keypress", [](const sf::Event& event) {
         printf("Key: %d\n", event.key.code);
