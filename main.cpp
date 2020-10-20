@@ -1,6 +1,7 @@
 #include <string>
 #include <iostream>
 #include <map>
+#include <cctype>
 #include "Canvas.hpp"
 #include "Image.hpp"
 
@@ -25,12 +26,17 @@ void render(Canvas* canvas)
     canvas->strokeStyle("rgba(255, 0, 0, 0.5)");
     canvas->lineWidth(2);
     canvas->strokeRect(10, 10, 210, 210);
+    canvas->fillStyle("indianred");
+    canvas->fillText("Text test", 10, 220);
 }
 
 int main(int argc, char** argv)
 {
     image.src("W:\\pictures\\test4.jpg");
     Canvas canvas;
+
+    canvas.loadFont("Arial", "W:\\dev\\canvas\\arial.ttf");
+    canvas.font("bold underline italic 25px Arial");
 
     canvas.addEventListener("keypress", [](const sf::Event& event) {
         printf("Key: %d\n", event.key.code);

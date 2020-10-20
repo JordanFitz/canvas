@@ -148,6 +148,156 @@ void Canvas::_registerColor(const char* name, const sf::Color& color)
     m_colorCache.insert(std::pair<std::string, sf::Color>(name, color));
 }
 
+sf::Text* Canvas::_parseFontString(std::string& fontString)
+{
+    trim(fontString);
+
+    if (m_texts.find(fontString) != m_texts.end())
+    {
+        return m_texts.at(fontString);
+    }
+
+    std::vector<std::string> parts;
+    std::string part = "";
+
+    std::string family;
+
+    bool italic = false,
+        underlined = false,
+        bold = false;
+
+    // default SFML text size
+    int size = 30;
+
+    for (auto it = fontString.begin(); it < fontString.end(); it++)
+    {
+        unsigned char c = *it;
+
+        if (c == ' ')
+        {
+            trim(part);
+            if (part.length() > 0)
+            {
+                parts.push_back(part);
+            }
+            part = "";
+        }
+        else
+        {
+            part += c;
+        }
+    }
+
+    if (part.length() > 0)
+    {
+        trim(part);
+        if (part.length() > 0)
+        {
+            parts.push_back(part);
+        }
+    }
+
+    bool buildingFamily = false;
+    for (auto it = parts.begin(); it < parts.end(); it++)
+    {
+        std::string part = *it;
+
+        if (buildingFamily)
+        {
+            if (part.substr(part.length() - 1, 1)[0] == '"')
+            {
+                buildingFamily = false;
+                part = part.substr(0, part.length() - 1);
+            }
+
+            family += " " + part;
+        }
+        else if (part == "italic")
+        {
+            italic = true;
+        }
+        else if (part == "bold")
+        {
+            bold = true;
+        }
+        // Underlining can't technically be done in the Canvas API because
+        // it only allows you to set `font` and not `text-decoration`. I'm 
+        // allowing it here for convenience.
+        else if (part == "underline" || part == "underlined")
+        {
+            underlined = true;
+        }
+        else if (std::isdigit(part[0]))
+        {
+            if (part.length() > 2 && part.substr(part.length() - 2, 2) == "px")
+            {
+                part = part.substr(0, part.length() - 2);
+                size = std::stoi(part);
+            }
+        }
+        else if (part[0] == '"')
+        {
+            if (part.substr(part.length() - 1, 1)[0] == '"')
+            {
+                part = part.substr(0, part.length() - 1);
+            }
+            else
+            {
+                buildingFamily = true;
+            }
+
+            family = part.substr(1, part.length());
+        }
+        else
+        {
+            family = part;
+        }
+    }
+
+    printf(
+        "Parsed font string: '%s' ->\n{\n\tsize=%d\n\tfamily=%s\n\tbold=%s\n\tunderlined=%s\n\titalic=%s\n}\n",
+        fontString.c_str(),
+        size,
+        family.c_str(),
+        bold ? "true" : "false",
+        underlined ? "true" : "false",
+        italic ? "true" : "false"
+    );
+
+    if (m_fonts.find(family) != m_fonts.end())
+    {
+        sf::Text* text = new sf::Text();
+
+        text->setFont(*m_fonts.at(family));
+        text->setCharacterSize(size);
+        
+        sf::Uint32 style = 0;
+
+        if (bold) style |= sf::Text::Bold;
+        if (italic) style |= sf::Text::Italic;
+        if (underlined) style |= sf::Text::Underlined;
+
+        if (style != 0)
+        {
+            text->setStyle(style);
+        }
+
+        m_texts.insert(std::pair<std::string, sf::Text*>(fontString, text));
+
+        printf("Cached font string '%s'.\n", fontString.c_str());
+
+        return text;
+    }
+    else
+    {
+        printf("No loaded font face with the name '%s'.\n", family.c_str());
+    }
+
+    printf("Couldn't construct a Text object from font string '%s'.\n", fontString.c_str());
+
+    return nullptr;
+}
+
 Canvas::Canvas() :
     m_width(300),
     m_height(150),
@@ -305,6 +455,16 @@ Canvas::~Canvas()
 {
     delete m_window;
     delete m_rectangle;
+
+    for (auto it = m_fonts.begin(); it != m_fonts.end(); it++)
+    {
+        delete it->second;
+    }
+
+    for (auto it = m_texts.begin(); it != m_texts.end(); it++)
+    {
+        delete it->second;
+    }
 }
 
 void Canvas::hookUpdate(void (*proc)(Canvas*))
@@ -315,6 +475,20 @@ void Canvas::hookUpdate(void (*proc)(Canvas*))
 void Canvas::hookRender(void (*proc)(Canvas*))
 {
     m_render = proc;
+}
+
+void Canvas::loadFont(const char* _name, const char* path)
+{
+    auto name = std::string(_name);
+
+    if (m_fonts.find(name) != m_fonts.end())
+    {
+        printf("Replacing font '%s'\n", _name);
+    }
+
+    sf::Font* font = new sf::Font();
+    font->loadFromFile(path);
+    m_fonts.insert(std::pair<std::string, sf::Font*>(name, font));
 }
 
 void Canvas::initialize()
@@ -380,6 +554,17 @@ void Canvas::initialize()
 
         m_window->display();
     }
+}
+
+void Canvas::font(const char* fontString)
+{
+    m_fontString = std::string(fontString);
+    m_text = _parseFontString(m_fontString);
+}
+
+std::string Canvas::font() const
+{
+    return m_fontString;
 }
 
 std::string Canvas::fillStyle() const
@@ -494,6 +679,23 @@ void Canvas::drawImage(const Image& image, float sx, float sy, float sWidth, flo
     m_window->draw(*sprite);
 
     sprite->setTextureRect(rect);
+}
+
+void Canvas::fillText(const char* string, float x, float y)
+{
+    if (m_text == nullptr)
+    {
+        printf("Call to fillText() with no font set.");
+        return;
+    }
+
+    m_text->setFillColor(m_fillColor);
+    m_text->setOutlineThickness(0.0f);
+
+    m_text->setPosition(sf::Vector2f(x, y));
+    m_text->setString(string);
+
+    m_window->draw(*m_text);
 }
 
 void Canvas::addEventListener(const char* _type, void (*handler)(const sf::Event&))

@@ -10,6 +10,8 @@ public:
     Canvas();
     ~Canvas();
 
+    void loadFont(const char*, const char*);
+
     void fillStyle(const char*);
     std::string fillStyle() const;
 
@@ -39,11 +41,18 @@ public:
     void addEventListener(const char*, void (*)(const sf::Event&));
     void dispatchEvent(const char*, const sf::Event&);
 
+    void font(const char*);
+    std::string font() const;
+
+    void fillText(const char*, float, float);
+
 private:
     sf::RenderWindow* m_window;
     sf::RectangleShape* m_rectangle;
 
     std::map<std::string, sf::Color> m_colorCache;
+    std::map<std::string, sf::Font*> m_fonts;
+    std::map<std::string, sf::Text*> m_texts;
 
     std::string m_fillStyle, m_strokeStyle;
     sf::Color m_fillColor, m_strokeColor;
@@ -56,6 +65,10 @@ private:
     void (*m_update)(Canvas*) = nullptr;
 
     std::map<std::string, std::vector<void(*)(const sf::Event&)>> m_handlers;
+
+    sf::Text* m_text;
+    std::string m_fontString;
+    sf::Text* _parseFontString(std::string&);
 
     sf::Color _parseColor(std::string&);
     void _registerColor(const char*, const sf::Color&);
