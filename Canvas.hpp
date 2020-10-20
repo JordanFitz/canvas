@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 
+class Image;
+
 class Canvas
 {
 public:
@@ -24,6 +26,10 @@ public:
     unsigned int height();
 
     void fillRect(float, float, float, float);
+
+    void drawImage(const Image&, float, float);
+    void drawImage(const Image&, float, float, float, float);
+    void drawImage(const Image&, float, float, float, float, float, float, float, float);
 
     void initialize();
     void hookUpdate(void (*proc)(Canvas*));

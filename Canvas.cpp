@@ -1,3 +1,4 @@
+#include "Image.hpp"
 #include "Canvas.hpp"
 #include "util.hpp"
 
@@ -404,4 +405,43 @@ void Canvas::fillRect(float x, float y, float width, float height)
     m_rectangle->setFillColor(m_fillColor);
     m_rectangle->setOutlineThickness(0.0f);
     m_window->draw(*m_rectangle);
+}
+
+void Canvas::drawImage(const Image& image, float dx, float dy)
+{
+    sf::Sprite* sprite = image.getSprite();
+    sprite->setPosition(sf::Vector2f(dx, dy));
+    m_window->draw(*sprite);
+}
+
+void Canvas::drawImage(const Image& image, float dx, float dy, float dWidth, float dHeight)
+{
+    sf::Sprite* sprite = image.getSprite();
+
+    sprite->setPosition(sf::Vector2f(dx, dy));
+
+    auto size = sprite->getTexture()->getSize();
+    sprite->setScale(sf::Vector2f(dWidth / size.x, dHeight / size.y));
+
+    m_window->draw(*sprite);
+}
+
+void Canvas::drawImage(const Image& image, float sx, float sy, float sWidth, float sHeight, float dx, float dy, float dWidth, float dHeight)
+{
+    sf::Sprite* sprite = image.getSprite();
+
+    sf::IntRect rect = sprite->getTextureRect();
+    sprite->setTextureRect(sf::IntRect(
+        static_cast<int>(sx),
+        static_cast<int>(sy),
+        static_cast<int>(sWidth),
+        static_cast<int>(sHeight)
+    ));
+
+    sprite->setPosition(sf::Vector2f(dx, dy));
+    sprite->setScale(sf::Vector2f(dWidth / sWidth, dHeight / sHeight));
+
+    m_window->draw(*sprite);
+
+    sprite->setTextureRect(rect);
 }
