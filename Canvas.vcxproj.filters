@@ -35,5 +35,8 @@
     <ClInclude Include="Image.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TextMetrics.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

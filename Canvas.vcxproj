@@ -151,6 +151,7 @@
   <ItemGroup>
     <ClInclude Include="Canvas.hpp" />
     <ClInclude Include="Image.hpp" />
+    <ClInclude Include="TextMetrics.hpp" />
     <ClInclude Include="util.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

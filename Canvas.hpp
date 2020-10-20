@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 class Image;
+struct TextMetrics;
 
 class Canvas
 {
@@ -49,6 +50,8 @@ public:
 
     void fillText(const char*, float, float);
     void strokeText(const char*, float, float);
+
+    TextMetrics measureText(const char*);
 
 private:
     sf::RenderWindow* m_window;

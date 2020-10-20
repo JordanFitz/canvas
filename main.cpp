@@ -4,6 +4,7 @@
 #include <cctype>
 #include "Canvas.hpp"
 #include "Image.hpp"
+#include "TextMetrics.hpp"
 
 Image image;
 
@@ -28,6 +29,8 @@ void render(Canvas* canvas)
     canvas->lineWidth(2);
     canvas->strokeRect(10, 10, 210, 210);
     canvas->lineWidth(2);
+    canvas->strokeStyle("lime");
+    canvas->strokeRect(10, 230, canvas->measureText("Text test").width, 45);
     canvas->fillStyle("indianred");
     canvas->fillText("Text test", 10, 220);    
 }

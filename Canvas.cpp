@@ -1,4 +1,5 @@
 #include "Image.hpp"
+#include "TextMetrics.hpp"
 #include "Canvas.hpp"
 #include "util.hpp"
 
@@ -731,6 +732,17 @@ void Canvas::strokeText(const char* string, float x, float y)
     m_text->setString(string);
 
     m_window->draw(*m_text);
+}
+
+TextMetrics Canvas::measureText(const char* string)
+{
+    m_text->setString(string);
+    m_text->setOutlineThickness(0.0f);
+    m_text->setFillColor(sf::Color::Transparent);
+
+    m_window->draw(*m_text);
+
+    return { m_text->getLocalBounds().width };
 }
 
 void Canvas::addEventListener(const char* _type, void (*handler)(const sf::Event&))
