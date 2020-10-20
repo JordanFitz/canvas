@@ -33,7 +33,13 @@ sf::Color Canvas::_parseColor(std::string& style)
             style = style.substr(1, 9);
             if (style.length() == 3)
             {
-                style = style + style;
+                std::stringstream stream;
+
+                stream << style[0] << style[0];
+                stream << style[1] << style[1];
+                stream << style[2] << style[2];
+
+                style = stream.str();
             }
 
             sf::Uint8 components[4] = { 0, 0, 0, 255 };
@@ -293,7 +299,6 @@ Canvas::Canvas() :
     _registerColor("saddlebrown", sf::Color(139, 69, 19));
     _registerColor("sienna", sf::Color(160, 82, 45));
     _registerColor("brown", sf::Color(165, 42, 42));
-
 }
 
 Canvas::~Canvas()
@@ -343,7 +348,7 @@ void Canvas::initialize()
     }
 }
 
-std::string Canvas::fillStyle()
+std::string Canvas::fillStyle() const
 {
     return m_fillStyle;
 }
@@ -354,7 +359,7 @@ void Canvas::fillStyle(const char* newStyle)
     m_fillColor = _parseColor(m_fillStyle);
 }
 
-std::string Canvas::strokeStyle()
+std::string Canvas::strokeStyle() const
 {
     return m_strokeStyle;
 }
@@ -362,6 +367,7 @@ std::string Canvas::strokeStyle()
 void Canvas::strokeStyle(const char* newStyle)
 {
     m_strokeStyle = std::string(newStyle);
+    m_strokeColor = _parseColor(m_strokeStyle);
 }
 
 void Canvas::lineWidth(float newWidth)
@@ -369,7 +375,7 @@ void Canvas::lineWidth(float newWidth)
     m_lineWidth = newWidth;
 }
 
-float Canvas::lineWidth()
+float Canvas::lineWidth() const
 {
     return m_lineWidth;
 }
@@ -381,7 +387,7 @@ void Canvas::width(unsigned int newWidth)
     m_window->setSize(sf::Vector2u(m_width, size.y));
 }
 
-unsigned int Canvas::width()
+unsigned int Canvas::width() const
 {
     return m_width;
 }
@@ -393,7 +399,7 @@ void Canvas::height(unsigned int newHeight)
     m_window->setSize(sf::Vector2u(size.x, m_height));
 }
 
-unsigned int Canvas::height()
+unsigned int Canvas::height() const
 {
     return m_height;
 }
@@ -404,6 +410,16 @@ void Canvas::fillRect(float x, float y, float width, float height)
     m_rectangle->setPosition(sf::Vector2f(x, y));
     m_rectangle->setFillColor(m_fillColor);
     m_rectangle->setOutlineThickness(0.0f);
+    m_window->draw(*m_rectangle);
+}
+
+void Canvas::strokeRect(float x, float y, float width, float height)
+{
+    m_rectangle->setSize(sf::Vector2f(width - m_lineWidth * 2, height - m_lineWidth * 2));
+    m_rectangle->setPosition(sf::Vector2f(x + m_lineWidth, y + m_lineWidth));
+    m_rectangle->setFillColor(sf::Color::Transparent);
+    m_rectangle->setOutlineThickness(m_lineWidth);
+    m_rectangle->setOutlineColor(m_strokeColor);
     m_window->draw(*m_rectangle);
 }
 

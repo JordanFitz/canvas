@@ -11,21 +11,22 @@ public:
     ~Canvas();
 
     void fillStyle(const char*);
-    std::string fillStyle();
+    std::string fillStyle() const;
 
     void strokeStyle(const char*);
-    std::string strokeStyle();
+    std::string strokeStyle() const;
 
     void lineWidth(float);
-    float lineWidth();
+    float lineWidth() const;
 
     void width(unsigned int);
-    unsigned int width();
+    unsigned int width() const;
 
     void height(unsigned int);
-    unsigned int height();
+    unsigned int height() const;
 
     void fillRect(float, float, float, float);
+    void strokeRect(float, float, float, float);
 
     void drawImage(const Image&, float, float);
     void drawImage(const Image&, float, float, float, float);
@@ -42,7 +43,7 @@ private:
     std::map<std::string, sf::Color> m_colorCache;
 
     std::string m_fillStyle, m_strokeStyle;
-    sf::Color m_fillColor;
+    sf::Color m_fillColor, m_strokeColor;
 
     float m_lineWidth;
 
