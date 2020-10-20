@@ -14,6 +14,7 @@ void update(Canvas* canvas)
 
 void render(Canvas* canvas)
 {
+    canvas->clearRect();
     canvas->fillStyle("#0F0");
     canvas->fillRect(10, 10, 210, 210);
     canvas->fillStyle("#fff");
@@ -27,8 +28,6 @@ void render(Canvas* canvas)
     canvas->lineWidth(2);
     canvas->strokeRect(10, 10, 210, 210);
     canvas->lineWidth(2);
-    canvas->strokeStyle("#fff");
-    canvas->strokeText("Text test", 10, 220);
     canvas->fillStyle("indianred");
     canvas->fillText("Text test", 10, 220);    
 }

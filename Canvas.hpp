@@ -13,10 +13,10 @@ public:
     void loadFont(const char*, const char*);
 
     void fillStyle(const char*);
-    std::string fillStyle() const;
+    const char* fillStyle() const;
 
     void strokeStyle(const char*);
-    std::string strokeStyle() const;
+    const char* strokeStyle() const;
 
     void lineWidth(float);
     float lineWidth() const;
@@ -26,6 +26,9 @@ public:
 
     void height(unsigned int);
     unsigned int height() const;
+
+    void clearRect();
+    void clearRect(float, float, float, float);
 
     void fillRect(float, float, float, float);
     void strokeRect(float, float, float, float);
@@ -42,7 +45,7 @@ public:
     void dispatchEvent(const char*, const sf::Event&);
 
     void font(const char*);
-    std::string font() const;
+    const char* font() const;
 
     void fillText(const char*, float, float);
     void strokeText(const char*, float, float);

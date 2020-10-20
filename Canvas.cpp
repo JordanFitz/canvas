@@ -549,7 +549,7 @@ void Canvas::initialize()
             }
         }
 
-        m_window->clear();
+        //m_window->clear();
 
         if(m_update != nullptr) m_update(this);
         if(m_render != nullptr) m_render(this);
@@ -564,14 +564,14 @@ void Canvas::font(const char* fontString)
     m_text = _parseFontString(m_fontString);
 }
 
-std::string Canvas::font() const
+const char* Canvas::font() const
 {
-    return m_fontString;
+    return m_fontString.c_str();
 }
 
-std::string Canvas::fillStyle() const
+const char* Canvas::fillStyle() const
 {
-    return m_fillStyle;
+    return m_fillStyle.c_str();
 }
 
 void Canvas::fillStyle(const char* newStyle)
@@ -580,9 +580,9 @@ void Canvas::fillStyle(const char* newStyle)
     m_fillColor = _parseColor(m_fillStyle);
 }
 
-std::string Canvas::strokeStyle() const
+const char* Canvas::strokeStyle() const
 {
-    return m_strokeStyle;
+    return m_strokeStyle.c_str();
 }
 
 void Canvas::strokeStyle(const char* newStyle)
@@ -642,6 +642,21 @@ void Canvas::strokeRect(float x, float y, float width, float height)
     m_rectangle->setOutlineThickness(m_lineWidth);
     m_rectangle->setOutlineColor(m_strokeColor);
     m_window->draw(*m_rectangle);
+}
+
+void Canvas::clearRect()
+{
+    m_window->clear(sf::Color::Black);
+}
+
+void Canvas::clearRect(float x, float y, float width, float height)
+{
+    auto fs = this->fillStyle();
+    
+    this->fillStyle("black");
+    this->fillRect(x, y, width, height);
+
+    this->fillStyle(fs);
 }
 
 void Canvas::drawImage(const Image& image, float dx, float dy)
