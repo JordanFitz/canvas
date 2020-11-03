@@ -309,11 +309,15 @@ Canvas::Canvas() :
     m_backgroundColor("white")
 {
     m_rectangle = new sf::RectangleShape();
+
+    sf::ContextSettings settings;
+    settings.antialiasingLevel = 8;
+
     m_window = new sf::RenderWindow(
         sf::VideoMode(m_width, m_height),
-        "Canvas", sf::Style::Close
+        "Canvas", sf::Style::Close, settings
     );
-    
+
     _registerColor("lightsalmon", sf::Color(255, 160, 122));
     _registerColor("salmon", sf::Color(250, 128, 114));
     _registerColor("darksalmon", sf::Color(233, 150, 122));
@@ -642,8 +646,8 @@ void Canvas::strokeRect(float x, float y, float width, float height)
     m_rectangle->setSize(sf::Vector2f(width - m_lineWidth, height - m_lineWidth));
     m_rectangle->setPosition(sf::Vector2f(x + m_lineWidth / 2, y + m_lineWidth / 2));
     m_rectangle->setFillColor(sf::Color::Transparent);
-    m_rectangle->setOutlineThickness(m_lineWidth);
     m_rectangle->setOutlineColor(m_strokeColor);
+    m_rectangle->setOutlineThickness(m_lineWidth);
 
     m_window->draw(*m_rectangle);
 }

@@ -5,6 +5,8 @@
 
 #include "Path.hpp"
 
+#define v(x,y) sf::Vector2f(x,y)
+
 Path::Path() :
     m_closed(false),
     m_computed(false),
@@ -81,32 +83,20 @@ void Path::_computeVertices(float lineWidth, sf::Color color)
             vertexArray = m_lines[i];
         }
 
-        const float c1 = static_cast<float>(cos(p1)),
-            s1 = static_cast<float>(sin(p1)),
-            c2 = static_cast<float>(cos(p2)),
-            s2 = static_cast<float>(sin(p2));
-
         const float multiplier = lineWidth / 2.0f;
 
-        (*vertexArray)[0].position = sf::Vector2f(
-            vertex.x + (multiplier * c2),
-            vertex.y + (multiplier * s2)
+        const sf::Vector2f v1 = multiplier * sf::Vector2f(
+            static_cast<float>(cos(p1)), static_cast<float>(sin(p1))
         );
 
-        (*vertexArray)[1].position = sf::Vector2f(
-            vertex.x + (multiplier * c1),
-            vertex.y + (multiplier * s1)
+        const sf::Vector2f v2 = multiplier * sf::Vector2f(
+            static_cast<float>(cos(p2)), static_cast<float>(sin(p2))
         );
 
-        (*vertexArray)[2].position = sf::Vector2f(
-            next.x + (multiplier * c1),
-            next.y + (multiplier * s1)
-        );
-
-        (*vertexArray)[3].position = sf::Vector2f(
-            next.x + (multiplier * c2),
-            next.y + (multiplier * s2)
-        );
+        (*vertexArray)[0].position = vertex + v2;
+        (*vertexArray)[1].position = vertex + v1;
+        (*vertexArray)[2].position = next + v1;
+        (*vertexArray)[3].position = next + v2;
 
         for (uint8_t i = 0; i < 4; i++)
             (*vertexArray)[i].color = color;
@@ -125,18 +115,20 @@ void Path::_computeConnectors(sf::Color color)
     size_t i = 0;
     for (auto it = m_lines.begin(); it < m_lines.end(); it++)
     {
-        // 'closed' is true if the end and beginning points are the same.
-        // it isn't affected by m_closed
-        bool closed = false;
+        // 'closed' is true if the end and beginning points are the same, or if m_closed is true.
+        bool closed = m_closed;
 
         sf::VertexArray current, next;
 
         if ((it + 1) == m_lines.end())
         {
-            auto a = *(m_vertices.begin());
-            auto b = *(m_vertices.end() - 1);
+            if (!m_closed)
+            {
+                auto a = *(m_vertices.begin());
+                auto b = *(m_vertices.end() - 1);
 
-            closed = a == b;
+                closed = a == b;
+            }
 
             if (!closed) break;
 
@@ -151,25 +143,44 @@ void Path::_computeConnectors(sf::Color color)
 
         sf::VertexArray* vertexArray;
 
-
         size_t bounds = m_lines.size();
         if (!closed) bounds--;
 
         if (m_connectors.size() < bounds)
         {
-            vertexArray = new sf::VertexArray(sf::Quads, 4);
+            vertexArray = new sf::VertexArray(sf::Quads, 8);
         }
         else
         {
             vertexArray = m_connectors[i];
         }
 
-        (*vertexArray)[0].position = current[3].position;
-        (*vertexArray)[1].position = current[2].position;
-        (*vertexArray)[2].position = next[1].position;
-        (*vertexArray)[3].position = next[0].position;
+        const sf::Vector2f delta1 = current[3].position - current[0].position;
+        const double angle1 = atan2(delta1.y, delta1.x);
 
-        for (uint8_t i = 0; i < 4; i++)
+        const sf::Vector2f delta2 = next[3].position - next[0].position;
+        const double angle2 = atan2(delta2.y, delta2.x);
+
+        const sf::Vector2f delta3 = current[2].position - current[1].position;
+        const double angle3 = atan2(delta3.y, delta3.x);
+
+        const sf::Vector2f delta4 = next[2].position - next[1].position;
+        const double angle4 = atan2(delta4.y, delta4.x);
+
+        auto intersection1 = _pointOfIntersection(angle1, current[3].position, angle2, next[0].position);
+        auto intersection2 = _pointOfIntersection(angle3, current[2].position, angle4, next[1].position);
+
+        (*vertexArray)[0] = current[3].position;
+        (*vertexArray)[1] = current[2].position;
+        (*vertexArray)[2] = intersection1;
+        (*vertexArray)[3] = intersection2;
+
+        (*vertexArray)[4] = intersection1;
+        (*vertexArray)[5] = intersection2;
+        (*vertexArray)[6] = next[1].position;
+        (*vertexArray)[7] = next[0].position;
+
+        for (uint8_t i = 0; i < (*vertexArray).getVertexCount(); i++)
             (*vertexArray)[i].color = color;
 
         if(m_connectors.size() < bounds)
@@ -205,4 +216,16 @@ void Path::draw(float lineWidth, sf::Color color, sf::RenderWindow* window)
 bool Path::empty() const
 {
     return m_vertices.empty();
+}
+
+sf::Vector2f Path::_pointOfIntersection(double a1, sf::Vector2f p1, double a2, sf::Vector2f p2)
+{
+    const double dy = static_cast<double>(p2.y - p1.y);
+
+    const double m1 = static_cast<float>(tan(a1)),
+        m2 = static_cast<float>(tan(a2)),
+        h = ((m2 * p2.x - m1 * p1.x) - dy) / (m2 - m1),
+        k = m1 * (h - p1.x) + p1.y;
+
+    return sf::Vector2f(static_cast<float>(h), static_cast<float>(k));
 }

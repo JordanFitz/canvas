@@ -21,6 +21,8 @@ private:
     std::vector<sf::VertexArray*> m_lines;
     std::vector<sf::VertexArray*> m_connectors;
 
+    std::vector<sf::Vector2f> m_projections;
+
     bool m_closed;
     bool m_computed;
 
@@ -29,5 +31,7 @@ private:
     void _computeVertices(float, sf::Color);
     void _computeConnectors(sf::Color);
     void _maybeCompute(float, sf::Color);
+
+    sf::Vector2f _pointOfIntersection(double, sf::Vector2f, double, sf::Vector2f);
 };
 
