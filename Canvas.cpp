@@ -1,4 +1,5 @@
 #include "Image.hpp"
+#include "Path.hpp"
 #include "TextMetrics.hpp"
 #include "Canvas.hpp"
 #include "util.hpp"
@@ -305,15 +306,14 @@ Canvas::Canvas() :
     m_lineWidth(1.0f),
     m_render(nullptr),
     m_update(nullptr),
-    m_fillColor(sf::Color::Black),
-    m_strokeColor(sf::Color::Black)
+    m_backgroundColor("white")
 {
     m_rectangle = new sf::RectangleShape();
     m_window = new sf::RenderWindow(
         sf::VideoMode(m_width, m_height),
         "Canvas", sf::Style::Close
     );
-
+    
     _registerColor("lightsalmon", sf::Color(255, 160, 122));
     _registerColor("salmon", sf::Color(250, 128, 114));
     _registerColor("darksalmon", sf::Color(233, 150, 122));
@@ -452,12 +452,16 @@ Canvas::Canvas() :
     _registerColor("saddlebrown", sf::Color(139, 69, 19));
     _registerColor("sienna", sf::Color(160, 82, 45));
     _registerColor("brown", sf::Color(165, 42, 42));
+
+    fillStyle("black");
+    strokeStyle("black");
 }
 
 Canvas::~Canvas()
 {
     delete m_window;
     delete m_rectangle;
+    delete m_currentPath;
 
     for (auto it = m_fonts.begin(); it != m_fonts.end(); it++)
     {
@@ -470,12 +474,12 @@ Canvas::~Canvas()
     }
 }
 
-void Canvas::hookUpdate(void (*proc)(Canvas*))
+void Canvas::hookUpdate(void (*proc)(Canvas&))
 {
     m_update = proc;
 }
 
-void Canvas::hookRender(void (*proc)(Canvas*))
+void Canvas::hookRender(void (*proc)(Canvas&))
 {
     m_render = proc;
 }
@@ -550,10 +554,8 @@ void Canvas::initialize()
             }
         }
 
-        //m_window->clear();
-
-        if(m_update != nullptr) m_update(this);
-        if(m_render != nullptr) m_render(this);
+        if(m_update != nullptr) m_update(*this);
+        if(m_render != nullptr) m_render(*this);
 
         m_window->display();
     }
@@ -637,27 +639,28 @@ void Canvas::fillRect(float x, float y, float width, float height)
 
 void Canvas::strokeRect(float x, float y, float width, float height)
 {
-    m_rectangle->setSize(sf::Vector2f(width - m_lineWidth * 2, height - m_lineWidth * 2));
-    m_rectangle->setPosition(sf::Vector2f(x + m_lineWidth, y + m_lineWidth));
+    m_rectangle->setSize(sf::Vector2f(width - m_lineWidth, height - m_lineWidth));
+    m_rectangle->setPosition(sf::Vector2f(x + m_lineWidth / 2, y + m_lineWidth / 2));
     m_rectangle->setFillColor(sf::Color::Transparent);
     m_rectangle->setOutlineThickness(m_lineWidth);
     m_rectangle->setOutlineColor(m_strokeColor);
+
     m_window->draw(*m_rectangle);
 }
 
 void Canvas::clearRect()
 {
-    m_window->clear(sf::Color::Black);
+    auto color = _parseColor(m_backgroundColor);
+    m_window->clear(color);
 }
 
 void Canvas::clearRect(float x, float y, float width, float height)
 {
-    auto fs = this->fillStyle();
-    
-    this->fillStyle("black");
-    this->fillRect(x, y, width, height);
+    auto fs = fillStyle();
 
-    this->fillStyle(fs);
+    fillStyle(m_backgroundColor.c_str());
+    fillRect(x, y, width, height);
+    fillStyle(fs);
 }
 
 void Canvas::drawImage(const Image& image, float dx, float dy)
@@ -774,4 +777,54 @@ void Canvas::dispatchEvent(const char* _type, const sf::Event& event)
         auto handler = *it;
         handler(event);
     }
+}
+
+void Canvas::beginPath()
+{
+    if (m_currentPath == nullptr)
+    {
+        m_currentPath = new Path();
+    }
+
+    m_currentPath->reset();
+}
+
+void Canvas::moveTo(float x, float y)
+{
+    if (m_currentPath == nullptr || !m_currentPath->empty())
+    {
+        return;
+    }
+
+    m_currentPath->addVertex(x, y);
+}
+
+void Canvas::lineTo(float x, float y)
+{
+    if (m_currentPath == nullptr || m_currentPath->empty())
+    {
+        return;
+    }
+
+    m_currentPath->addVertex(x, y);
+}
+
+void Canvas::closePath()
+{
+    m_currentPath->close();
+}
+
+void Canvas::stroke()
+{
+    m_currentPath->draw(m_lineWidth, m_strokeColor, m_window);
+}
+
+void Canvas::backgroundColor(const char* style)
+{
+    m_backgroundColor = std::string(style);
+}
+
+const char* Canvas::backgroundColor() const
+{
+    return m_backgroundColor.c_str();
 }

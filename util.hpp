@@ -24,3 +24,23 @@ void printColor(const sf::Color& color, const char* suffix = "")
 {
     printf("rgba(%d, %d, %d, %.2f)%s", color.r, color.g, color.b, static_cast<float>(color.a) / 255.0f, suffix);
 }
+
+void printLine(sf::Vector2f a, sf::Vector2f b, sf::VertexArray v)
+{
+    printf("(%.2f,%.2f) -> (%.2f,%.2f) {\n", a.x, a.y, b.x, b.y);
+    for (uint8_t i = 0; i < v.getVertexCount(); i++)
+    {
+        printf("ctx.fillRect(%.2f,%.2f,10,10);\n", v[i].position.x, v[i].position.y);
+    }
+    printf("}\n");
+}
+
+void printLine(sf::VertexArray v)
+{
+    printf("{\n");
+    for (uint8_t i = 0; i < v.getVertexCount(); i++)
+    {
+        printf("ctx.fillRect(%.2f,%.2f,10,10);\n", v[i].position.x, v[i].position.y);
+    }
+    printf("}\n");
+}

@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 class Image;
+class Path;
 struct TextMetrics;
 
 class Canvas
@@ -28,6 +29,9 @@ public:
     void height(unsigned int);
     unsigned int height() const;
 
+    void backgroundColor(const char*);
+    const char* backgroundColor() const;
+
     void clearRect();
     void clearRect(float, float, float, float);
 
@@ -39,10 +43,10 @@ public:
     void drawImage(const Image&, float, float, float, float, float, float, float, float);
 
     void initialize();
-    void hookUpdate(void (*)(Canvas*));
-    void hookRender(void (*)(Canvas*));
+    void hookUpdate(void (*proc)(Canvas&));
+    void hookRender(void (*proc)(Canvas&));
 
-    void addEventListener(const char*, void (*)(const sf::Event&));
+    void addEventListener(const char*, void (*proc)(const sf::Event&));
     void dispatchEvent(const char*, const sf::Event&);
 
     void font(const char*);
@@ -51,6 +55,12 @@ public:
     void fillText(const char*, float, float);
     void strokeText(const char*, float, float);
 
+    void beginPath();
+    void moveTo(float, float);
+    void lineTo(float, float);
+    void stroke();
+    void closePath();
+    
     TextMetrics measureText(const char*);
 
 private:
@@ -61,15 +71,15 @@ private:
     std::map<std::string, sf::Font*> m_fonts;
     std::map<std::string, sf::Text*> m_texts;
 
-    std::string m_fillStyle, m_strokeStyle;
+    std::string m_fillStyle, m_strokeStyle, m_backgroundColor;
     sf::Color m_fillColor, m_strokeColor;
 
     float m_lineWidth;
 
     unsigned int m_width, m_height;
 
-    void (*m_render)(Canvas*) = nullptr;
-    void (*m_update)(Canvas*) = nullptr;
+    void (*m_render)(Canvas&) = nullptr;
+    void (*m_update)(Canvas&) = nullptr;
 
     std::map<std::string, std::vector<void(*)(const sf::Event&)>> m_handlers;
 
@@ -79,5 +89,8 @@ private:
 
     sf::Color _parseColor(std::string&);
     void _registerColor(const char*, const sf::Color&);
+
+    std::vector<Path*> m_paths;
+    Path* m_currentPath = nullptr;
 };
 
