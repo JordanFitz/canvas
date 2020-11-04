@@ -5,6 +5,7 @@
 class Image;
 class Path;
 struct TextMetrics;
+enum class LineJoin;
 
 class Canvas
 {
@@ -28,6 +29,9 @@ public:
 
     void height(unsigned int);
     unsigned int height() const;
+
+    void lineJoin(const char*);
+    const char* lineJoin() const;
 
     void backgroundColor(const char*);
     const char* backgroundColor() const;
@@ -73,6 +77,9 @@ private:
 
     std::string m_fillStyle, m_strokeStyle, m_backgroundColor;
     sf::Color m_fillColor, m_strokeColor;
+
+    std::string m_lineJoinString;
+    LineJoin m_lineJoin;
 
     float m_lineWidth;
 

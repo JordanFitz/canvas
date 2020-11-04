@@ -1,5 +1,12 @@
 #pragma once
 
+enum class LineJoin
+{
+    Round,
+    Bevel,
+    Miter
+};
+
 constexpr auto PI_2 = 1.57079632679;
 
 class Path
@@ -11,6 +18,9 @@ public:
     void reset();
     void close();
     void addVertex(float, float);
+
+    void lineJoin(LineJoin);
+    LineJoin lineJoin() const;
 
     bool empty() const;
 
@@ -29,9 +39,11 @@ private:
     float m_lineWidth;
 
     void _computeVertices(float, sf::Color);
-    void _computeConnectors(sf::Color);
+    void _computeConnectors(float, sf::Color);
     void _maybeCompute(float, sf::Color);
 
     sf::Vector2f _pointOfIntersection(double, sf::Vector2f, double, sf::Vector2f);
+
+    LineJoin m_lineJoin;
 };
 

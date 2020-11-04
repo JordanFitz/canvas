@@ -97,10 +97,10 @@ int main(int argc, char** argv)
 
     /*image.src("W:\\pictures\\test4.jpg");
     canvas.loadFont("Arial", "W:\\dev\\canvas\\arial.ttf");
-    canvas.font("underline 45px Arial");
+    canvas.font("underline 45px Arial");*/
 
-    canvas.addEventListener("keypress", [](const sf::Event& event) {
-        printf("Key: %d\n", event.key.code);
+    /*canvas.addEventListener("keypress", [](const sf::Event& event) {
+        
     });*/
 
     canvas.width(800);

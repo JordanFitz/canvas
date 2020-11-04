@@ -306,7 +306,9 @@ Canvas::Canvas() :
     m_lineWidth(1.0f),
     m_render(nullptr),
     m_update(nullptr),
-    m_backgroundColor("white")
+    m_backgroundColor("white"),
+    m_lineJoinString("miter"),
+    m_lineJoin(LineJoin::Miter)
 {
     m_rectangle = new sf::RectangleShape();
 
@@ -820,6 +822,7 @@ void Canvas::closePath()
 
 void Canvas::stroke()
 {
+    m_currentPath->lineJoin(m_lineJoin);
     m_currentPath->draw(m_lineWidth, m_strokeColor, m_window);
 }
 
@@ -831,4 +834,29 @@ void Canvas::backgroundColor(const char* style)
 const char* Canvas::backgroundColor() const
 {
     return m_backgroundColor.c_str();
+}
+
+void Canvas::lineJoin(const char* join)
+{
+    if (m_lineJoinString == join) return;
+
+    m_lineJoinString = join;
+
+    if (m_lineJoinString == "round")
+    {
+        m_lineJoin = LineJoin::Round;
+    }
+    else if (m_lineJoinString == "bevel")
+    {
+        m_lineJoin = LineJoin::Bevel;
+    }
+    else
+    {
+        m_lineJoin = LineJoin::Miter;
+    }
+}
+
+const char* Canvas::lineJoin() const
+{
+    return m_lineJoinString.c_str();
 }

@@ -5,12 +5,11 @@
 
 #include "Path.hpp"
 
-#define v(x,y) sf::Vector2f(x,y)
-
 Path::Path() :
     m_closed(false),
     m_computed(false),
-    m_lineWidth(-1)
+    m_lineWidth(-1),
+    m_lineJoin(LineJoin::Miter)
 {}
 
 Path::~Path()
@@ -108,7 +107,7 @@ void Path::_computeVertices(float lineWidth, sf::Color color)
     }
 }
 
-void Path::_computeConnectors(sf::Color color)
+void Path::_computeConnectors(float lineWidth, sf::Color color)
 {
     if (m_vertices.size() < 2) return;
 
@@ -148,39 +147,89 @@ void Path::_computeConnectors(sf::Color color)
 
         if (m_connectors.size() < bounds)
         {
-            vertexArray = new sf::VertexArray(sf::Quads, 8);
+            if (m_lineJoin == LineJoin::Miter)
+            {
+                vertexArray = new sf::VertexArray(sf::Quads, 8);
+            }
+            else if(m_lineJoin == LineJoin::Bevel)
+            {
+                vertexArray = new sf::VertexArray(sf::Quads, 4);
+            }
+            else if (m_lineJoin == LineJoin::Round)
+            {
+                vertexArray = new sf::VertexArray(sf::TriangleFan, 32);
+            }
+            else
+            {
+                vertexArray = nullptr;
+            }
         }
         else
         {
             vertexArray = m_connectors[i];
         }
 
-        const sf::Vector2f delta1 = current[3].position - current[0].position;
-        const double angle1 = atan2(delta1.y, delta1.x);
+        if (vertexArray == nullptr)
+        {
+            return;
+        }
 
-        const sf::Vector2f delta2 = next[3].position - next[0].position;
-        const double angle2 = atan2(delta2.y, delta2.x);
+        if (m_lineJoin == LineJoin::Miter)
+        {
+            const sf::Vector2f delta1 = current[3].position - current[0].position;
+            const double angle1 = atan2(delta1.y, delta1.x);
 
-        const sf::Vector2f delta3 = current[2].position - current[1].position;
-        const double angle3 = atan2(delta3.y, delta3.x);
+            const sf::Vector2f delta2 = next[3].position - next[0].position;
+            const double angle2 = atan2(delta2.y, delta2.x);
 
-        const sf::Vector2f delta4 = next[2].position - next[1].position;
-        const double angle4 = atan2(delta4.y, delta4.x);
+            const sf::Vector2f delta3 = current[2].position - current[1].position;
+            const double angle3 = atan2(delta3.y, delta3.x);
 
-        auto intersection1 = _pointOfIntersection(angle1, current[3].position, angle2, next[0].position);
-        auto intersection2 = _pointOfIntersection(angle3, current[2].position, angle4, next[1].position);
+            const sf::Vector2f delta4 = next[2].position - next[1].position;
+            const double angle4 = atan2(delta4.y, delta4.x);
 
-        (*vertexArray)[0] = current[3].position;
-        (*vertexArray)[1] = current[2].position;
-        (*vertexArray)[2] = intersection1;
-        (*vertexArray)[3] = intersection2;
+            auto intersection1 = _pointOfIntersection(angle1, current[3].position, angle2, next[0].position);
+            auto intersection2 = _pointOfIntersection(angle3, current[2].position, angle4, next[1].position);
 
-        (*vertexArray)[4] = intersection1;
-        (*vertexArray)[5] = intersection2;
-        (*vertexArray)[6] = next[1].position;
-        (*vertexArray)[7] = next[0].position;
+            (*vertexArray)[0] = current[3].position;
+            (*vertexArray)[1] = current[2].position;
+            (*vertexArray)[2] = intersection1;
+            (*vertexArray)[3] = intersection2;
 
-        for (uint8_t i = 0; i < (*vertexArray).getVertexCount(); i++)
+            (*vertexArray)[4] = intersection1;
+            (*vertexArray)[5] = intersection2;
+            (*vertexArray)[6] = next[1].position;
+            (*vertexArray)[7] = next[0].position;
+        } 
+        else if (m_lineJoin == LineJoin::Bevel)
+        {
+            (*vertexArray)[0] = current[3].position;
+            (*vertexArray)[1] = current[2].position;
+            (*vertexArray)[2] = next[0].position;
+            (*vertexArray)[3] = next[1].position;
+        }
+        else if (m_lineJoin == LineJoin::Round)
+        {
+            const float tau = 4.0f * static_cast<float>(PI_2);
+            const float interval = tau / static_cast<float>(vertexArray->getVertexCount());
+            const float multiplier = lineWidth / 2.0f;
+
+            float angle = 0;
+
+            (*vertexArray)[0].position = m_vertices.at(i);
+
+            for (uint8_t j = 1; j < vertexArray->getVertexCount(); j++)
+            {
+                (*vertexArray)[j].position = m_vertices.at(i) + sf::Vector2f(multiplier * sf::Vector2f(
+                    static_cast<float>(cos(angle)), static_cast<float>(sin(angle))
+                ));
+                angle += interval;
+            }
+
+            (*vertexArray)[vertexArray->getVertexCount() - 1].position = m_vertices.at(i) + sf::Vector2f(multiplier, 0);
+        }
+
+        for (uint8_t i = 0; i < vertexArray->getVertexCount(); i++)
             (*vertexArray)[i].color = color;
 
         if(m_connectors.size() < bounds)
@@ -195,7 +244,7 @@ void Path::_maybeCompute(float lineWidth, sf::Color color)
     if (m_computed) return;
 
     _computeVertices(lineWidth, color);
-    _computeConnectors(color);
+    _computeConnectors(lineWidth, color);
 
     m_computed = true;
 }
@@ -220,7 +269,7 @@ bool Path::empty() const
 
 sf::Vector2f Path::_pointOfIntersection(double a1, sf::Vector2f p1, double a2, sf::Vector2f p2)
 {
-    const double dy = static_cast<double>(p2.y - p1.y);
+    const double dy = static_cast<double>(p2.y) - static_cast<double>(p1.y);
 
     const double m1 = static_cast<float>(tan(a1)),
         m2 = static_cast<float>(tan(a2)),
@@ -228,4 +277,14 @@ sf::Vector2f Path::_pointOfIntersection(double a1, sf::Vector2f p1, double a2, s
         k = m1 * (h - p1.x) + p1.y;
 
     return sf::Vector2f(static_cast<float>(h), static_cast<float>(k));
+}
+
+void Path::lineJoin(LineJoin join)
+{
+    m_lineJoin = join;
+}
+
+LineJoin Path::lineJoin() const
+{
+    return m_lineJoin;
 }
