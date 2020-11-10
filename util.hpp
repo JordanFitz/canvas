@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _UTIL_HPP
+#define _UTIL_HPP
 
 #include <string>
 #include <sstream>
@@ -44,3 +45,5 @@ void printLine(sf::VertexArray v)
     }
     printf("}\n");
 }
+
+#endif

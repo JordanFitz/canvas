@@ -1,10 +1,16 @@
+#include <cctype>
+#include <map>
+#include <string>
+
 #include "Image.hpp"
 #include "Path.hpp"
 #include "TextMetrics.hpp"
 #include "Canvas.hpp"
 #include "util.hpp"
 
-sf::Color Canvas::_parseColor(std::string& style)
+#define CURRENT_PATH m_paths.at(m_pathCount - 1)
+
+sf::Color Canvas::_parseColor(std::string style)
 {
     auto result = sf::Color::Black;
 
@@ -18,6 +24,145 @@ sf::Color Canvas::_parseColor(std::string& style)
     std::transform(style.begin(), style.end(), style.begin(), [](unsigned char c) {
         return std::tolower(c);
     });
+
+    if (style == "lightsalmon") return sf::Color(255, 160, 122);
+    if (style == "salmon") return sf::Color(250, 128, 114);
+    if (style == "darksalmon") return sf::Color(233, 150, 122);
+    if (style == "lightcoral") return sf::Color(240, 128, 128);
+    if (style == "indianred") return sf::Color(205, 92, 92);
+    if (style == "crimson") return sf::Color(220, 20, 60);
+    if (style == "firebrick") return sf::Color(178, 34, 34);
+    if (style == "red") return sf::Color(255, 0, 0);
+    if (style == "darkred") return sf::Color(139, 0, 0);
+    if (style == "coral") return sf::Color(255, 127, 80);
+    if (style == "tomato") return sf::Color(255, 99, 71);
+    if (style == "orangered") return sf::Color(255, 69, 0);
+    if (style == "gold") return sf::Color(255, 215, 0);
+    if (style == "orange") return sf::Color(255, 165, 0);
+    if (style == "darkorange") return sf::Color(255, 140, 0);
+    if (style == "lightyellow") return sf::Color(255, 255, 224);
+    if (style == "lemonchiffon") return sf::Color(255, 250, 205);
+    if (style == "lightgoldenrodyellow") return sf::Color(250, 250, 210);
+    if (style == "papayawhip") return sf::Color(255, 239, 213);
+    if (style == "moccasin") return sf::Color(255, 228, 181);
+    if (style == "peachpuff") return sf::Color(255, 218, 185);
+    if (style == "palegoldenrod") return sf::Color(238, 232, 170);
+    if (style == "khaki") return sf::Color(240, 230, 140);
+    if (style == "darkkhaki") return sf::Color(189, 183, 107);
+    if (style == "yellow") return sf::Color(255, 255, 0);
+    if (style == "lawngreen") return sf::Color(124, 252, 0);
+    if (style == "chartreuse") return sf::Color(127, 255, 0);
+    if (style == "limegreen") return sf::Color(50, 205, 50);
+    if (style == "lime") return sf::Color(0, 255, 0);
+    if (style == "forestgreen") return sf::Color(34, 139, 34);
+    if (style == "green") return sf::Color(0, 128, 0);
+    if (style == "darkgreen") return sf::Color(0, 100, 0);
+    if (style == "greenyellow") return sf::Color(173, 255, 47);
+    if (style == "yellowgreen") return sf::Color(154, 205, 50);
+    if (style == "springgreen") return sf::Color(0, 255, 127);
+    if (style == "mediumspringgreen") return sf::Color(0, 250, 154);
+    if (style == "lightgreen") return sf::Color(144, 238, 144);
+    if (style == "palegreen") return sf::Color(152, 251, 152);
+    if (style == "darkseagreen") return sf::Color(143, 188, 143);
+    if (style == "mediumseagreen") return sf::Color(60, 179, 113);
+    if (style == "seagreen") return sf::Color(46, 139, 87);
+    if (style == "olive") return sf::Color(128, 128, 0);
+    if (style == "darkolivegreen") return sf::Color(85, 107, 47);
+    if (style == "olivedrab") return sf::Color(107, 142, 35);
+    if (style == "lightcyan") return sf::Color(224, 255, 255);
+    if (style == "cyan") return sf::Color(0, 255, 255);
+    if (style == "aqua") return sf::Color(0, 255, 255);
+    if (style == "aquamarine") return sf::Color(127, 255, 212);
+    if (style == "mediumaquamarine") return sf::Color(102, 205, 170);
+    if (style == "paleturquoise") return sf::Color(175, 238, 238);
+    if (style == "turquoise") return sf::Color(64, 224, 208);
+    if (style == "mediumturquoise") return sf::Color(72, 209, 204);
+    if (style == "darkturquoise") return sf::Color(0, 206, 209);
+    if (style == "lightseagreen") return sf::Color(32, 178, 170);
+    if (style == "cadetblue") return sf::Color(95, 158, 160);
+    if (style == "darkcyan") return sf::Color(0, 139, 139);
+    if (style == "teal") return sf::Color(0, 128, 128);
+    if (style == "powderblue") return sf::Color(176, 224, 230);
+    if (style == "lightblue") return sf::Color(173, 216, 230);
+    if (style == "lightskyblue") return sf::Color(135, 206, 250);
+    if (style == "skyblue") return sf::Color(135, 206, 235);
+    if (style == "deepskyblue") return sf::Color(0, 191, 255);
+    if (style == "lightsteelblue") return sf::Color(176, 196, 222);
+    if (style == "dodgerblue") return sf::Color(30, 144, 255);
+    if (style == "cornflowerblue") return sf::Color(100, 149, 237);
+    if (style == "steelblue") return sf::Color(70, 130, 180);
+    if (style == "royalblue") return sf::Color(65, 105, 225);
+    if (style == "blue") return sf::Color(0, 0, 255);
+    if (style == "mediumblue") return sf::Color(0, 0, 205);
+    if (style == "darkblue") return sf::Color(0, 0, 139);
+    if (style == "navy") return sf::Color(0, 0, 128);
+    if (style == "midnightblue") return sf::Color(25, 25, 112);
+    if (style == "mediumslateblue") return sf::Color(123, 104, 238);
+    if (style == "slateblue") return sf::Color(106, 90, 205);
+    if (style == "darkslateblue") return sf::Color(72, 61, 139);
+    if (style == "lavender") return sf::Color(230, 230, 250);
+    if (style == "thistle") return sf::Color(216, 191, 216);
+    if (style == "plum") return sf::Color(221, 160, 221);
+    if (style == "violet") return sf::Color(238, 130, 238);
+    if (style == "orchid") return sf::Color(218, 112, 214);
+    if (style == "fuchsia") return sf::Color(255, 0, 255);
+    if (style == "magenta") return sf::Color(255, 0, 255);
+    if (style == "mediumorchid") return sf::Color(186, 85, 211);
+    if (style == "mediumpurple") return sf::Color(147, 112, 219);
+    if (style == "blueviolet") return sf::Color(138, 43, 226);
+    if (style == "darkviolet") return sf::Color(148, 0, 211);
+    if (style == "darkorchid") return sf::Color(153, 50, 204);
+    if (style == "darkmagenta") return sf::Color(139, 0, 139);
+    if (style == "purple") return sf::Color(128, 0, 128);
+    if (style == "indigo") return sf::Color(75, 0, 130);
+    if (style == "pink") return sf::Color(255, 192, 203);
+    if (style == "lightpink") return sf::Color(255, 182, 193);
+    if (style == "hotpink") return sf::Color(255, 105, 180);
+    if (style == "deeppink") return sf::Color(255, 20, 147);
+    if (style == "palevioletred") return sf::Color(219, 112, 147);
+    if (style == "mediumvioletred") return sf::Color(199, 21, 133);
+    if (style == "white") return sf::Color(255, 255, 255);
+    if (style == "snow") return sf::Color(255, 250, 250);
+    if (style == "honeydew") return sf::Color(240, 255, 240);
+    if (style == "mintcream") return sf::Color(245, 255, 250);
+    if (style == "azure") return sf::Color(240, 255, 255);
+    if (style == "aliceblue") return sf::Color(240, 248, 255);
+    if (style == "ghostwhite") return sf::Color(248, 248, 255);
+    if (style == "whitesmoke") return sf::Color(245, 245, 245);
+    if (style == "seashell") return sf::Color(255, 245, 238);
+    if (style == "beige") return sf::Color(245, 245, 220);
+    if (style == "oldlace") return sf::Color(253, 245, 230);
+    if (style == "floralwhite") return sf::Color(255, 250, 240);
+    if (style == "ivory") return sf::Color(255, 255, 240);
+    if (style == "antiquewhite") return sf::Color(250, 235, 215);
+    if (style == "linen") return sf::Color(250, 240, 230);
+    if (style == "lavenderblush") return sf::Color(255, 240, 245);
+    if (style == "mistyrose") return sf::Color(255, 228, 225);
+    if (style == "gainsboro") return sf::Color(220, 220, 220);
+    if (style == "lightgray") return sf::Color(211, 211, 211);
+    if (style == "silver") return sf::Color(192, 192, 192);
+    if (style == "darkgray") return sf::Color(169, 169, 169);
+    if (style == "gray") return sf::Color(128, 128, 128);
+    if (style == "dimgray") return sf::Color(105, 105, 105);
+    if (style == "lightslategray") return sf::Color(119, 136, 153);
+    if (style == "slategray") return sf::Color(112, 128, 144);
+    if (style == "darkslategray") return sf::Color(47, 79, 79);
+    if (style == "black") return sf::Color(0, 0, 0);
+    if (style == "cornsilk") return sf::Color(255, 248, 220);
+    if (style == "blanchedalmond") return sf::Color(255, 235, 205);
+    if (style == "bisque") return sf::Color(255, 228, 196);
+    if (style == "navajowhite") return sf::Color(255, 222, 173);
+    if (style == "wheat") return sf::Color(245, 222, 179);
+    if (style == "burlywood") return sf::Color(222, 184, 135);
+    if (style == "tan") return sf::Color(210, 180, 140);
+    if (style == "rosybrown") return sf::Color(188, 143, 143);
+    if (style == "sandybrown") return sf::Color(244, 164, 96);
+    if (style == "goldenrod") return sf::Color(218, 165, 32);
+    if (style == "peru") return sf::Color(205, 133, 63);
+    if (style == "chocolate") return sf::Color(210, 105, 30);
+    if (style == "saddlebrown") return sf::Color(139, 69, 19);
+    if (style == "sienna") return sf::Color(160, 82, 45);
+    if (style == "brown") return sf::Color(165, 42, 42);
 
     std::string originalStyle = style;
 
@@ -143,11 +288,6 @@ sf::Color Canvas::_parseColor(std::string& style)
     );
 
     return result;
-}
-
-void Canvas::_registerColor(const char* name, const sf::Color& color)
-{
-    m_colorCache.insert(std::pair<std::string, sf::Color>(name, color));
 }
 
 sf::Text* Canvas::_parseFontString(std::string& fontString)
@@ -308,7 +448,10 @@ Canvas::Canvas() :
     m_update(nullptr),
     m_backgroundColor("white"),
     m_lineJoinString("miter"),
-    m_lineJoin(LineJoin::Miter)
+    m_lineJoin(LineJoin::Miter),
+    m_lineCapString("butt"),
+    m_lineCap(LineCap::Butt),
+    m_pathCount(0)
 {
     m_rectangle = new sf::RectangleShape();
 
@@ -320,145 +463,6 @@ Canvas::Canvas() :
         "Canvas", sf::Style::Close, settings
     );
 
-    _registerColor("lightsalmon", sf::Color(255, 160, 122));
-    _registerColor("salmon", sf::Color(250, 128, 114));
-    _registerColor("darksalmon", sf::Color(233, 150, 122));
-    _registerColor("lightcoral", sf::Color(240, 128, 128));
-    _registerColor("indianred", sf::Color(205, 92, 92));
-    _registerColor("crimson", sf::Color(220, 20, 60));
-    _registerColor("firebrick", sf::Color(178, 34, 34));
-    _registerColor("red", sf::Color(255, 0, 0));
-    _registerColor("darkred", sf::Color(139, 0, 0));
-    _registerColor("coral", sf::Color(255, 127, 80));
-    _registerColor("tomato", sf::Color(255, 99, 71));
-    _registerColor("orangered", sf::Color(255, 69, 0));
-    _registerColor("gold", sf::Color(255, 215, 0));
-    _registerColor("orange", sf::Color(255, 165, 0));
-    _registerColor("darkorange", sf::Color(255, 140, 0));
-    _registerColor("lightyellow", sf::Color(255, 255, 224));
-    _registerColor("lemonchiffon", sf::Color(255, 250, 205));
-    _registerColor("lightgoldenrodyellow", sf::Color(250, 250, 210));
-    _registerColor("papayawhip", sf::Color(255, 239, 213));
-    _registerColor("moccasin", sf::Color(255, 228, 181));
-    _registerColor("peachpuff", sf::Color(255, 218, 185));
-    _registerColor("palegoldenrod", sf::Color(238, 232, 170));
-    _registerColor("khaki", sf::Color(240, 230, 140));
-    _registerColor("darkkhaki", sf::Color(189, 183, 107));
-    _registerColor("yellow", sf::Color(255, 255, 0));
-    _registerColor("lawngreen", sf::Color(124, 252, 0));
-    _registerColor("chartreuse", sf::Color(127, 255, 0));
-    _registerColor("limegreen", sf::Color(50, 205, 50));
-    _registerColor("lime", sf::Color(0, 255, 0));
-    _registerColor("forestgreen", sf::Color(34, 139, 34));
-    _registerColor("green", sf::Color(0, 128, 0));
-    _registerColor("darkgreen", sf::Color(0, 100, 0));
-    _registerColor("greenyellow", sf::Color(173, 255, 47));
-    _registerColor("yellowgreen", sf::Color(154, 205, 50));
-    _registerColor("springgreen", sf::Color(0, 255, 127));
-    _registerColor("mediumspringgreen", sf::Color(0, 250, 154));
-    _registerColor("lightgreen", sf::Color(144, 238, 144));
-    _registerColor("palegreen", sf::Color(152, 251, 152));
-    _registerColor("darkseagreen", sf::Color(143, 188, 143));
-    _registerColor("mediumseagreen", sf::Color(60, 179, 113));
-    _registerColor("seagreen", sf::Color(46, 139, 87));
-    _registerColor("olive", sf::Color(128, 128, 0));
-    _registerColor("darkolivegreen", sf::Color(85, 107, 47));
-    _registerColor("olivedrab", sf::Color(107, 142, 35));
-    _registerColor("lightcyan", sf::Color(224, 255, 255));
-    _registerColor("cyan", sf::Color(0, 255, 255));
-    _registerColor("aqua", sf::Color(0, 255, 255));
-    _registerColor("aquamarine", sf::Color(127, 255, 212));
-    _registerColor("mediumaquamarine", sf::Color(102, 205, 170));
-    _registerColor("paleturquoise", sf::Color(175, 238, 238));
-    _registerColor("turquoise", sf::Color(64, 224, 208));
-    _registerColor("mediumturquoise", sf::Color(72, 209, 204));
-    _registerColor("darkturquoise", sf::Color(0, 206, 209));
-    _registerColor("lightseagreen", sf::Color(32, 178, 170));
-    _registerColor("cadetblue", sf::Color(95, 158, 160));
-    _registerColor("darkcyan", sf::Color(0, 139, 139));
-    _registerColor("teal", sf::Color(0, 128, 128));
-    _registerColor("powderblue", sf::Color(176, 224, 230));
-    _registerColor("lightblue", sf::Color(173, 216, 230));
-    _registerColor("lightskyblue", sf::Color(135, 206, 250));
-    _registerColor("skyblue", sf::Color(135, 206, 235));
-    _registerColor("deepskyblue", sf::Color(0, 191, 255));
-    _registerColor("lightsteelblue", sf::Color(176, 196, 222));
-    _registerColor("dodgerblue", sf::Color(30, 144, 255));
-    _registerColor("cornflowerblue", sf::Color(100, 149, 237));
-    _registerColor("steelblue", sf::Color(70, 130, 180));
-    _registerColor("royalblue", sf::Color(65, 105, 225));
-    _registerColor("blue", sf::Color(0, 0, 255));
-    _registerColor("mediumblue", sf::Color(0, 0, 205));
-    _registerColor("darkblue", sf::Color(0, 0, 139));
-    _registerColor("navy", sf::Color(0, 0, 128));
-    _registerColor("midnightblue", sf::Color(25, 25, 112));
-    _registerColor("mediumslateblue", sf::Color(123, 104, 238));
-    _registerColor("slateblue", sf::Color(106, 90, 205));
-    _registerColor("darkslateblue", sf::Color(72, 61, 139));
-    _registerColor("lavender", sf::Color(230, 230, 250));
-    _registerColor("thistle", sf::Color(216, 191, 216));
-    _registerColor("plum", sf::Color(221, 160, 221));
-    _registerColor("violet", sf::Color(238, 130, 238));
-    _registerColor("orchid", sf::Color(218, 112, 214));
-    _registerColor("fuchsia", sf::Color(255, 0, 255));
-    _registerColor("magenta", sf::Color(255, 0, 255));
-    _registerColor("mediumorchid", sf::Color(186, 85, 211));
-    _registerColor("mediumpurple", sf::Color(147, 112, 219));
-    _registerColor("blueviolet", sf::Color(138, 43, 226));
-    _registerColor("darkviolet", sf::Color(148, 0, 211));
-    _registerColor("darkorchid", sf::Color(153, 50, 204));
-    _registerColor("darkmagenta", sf::Color(139, 0, 139));
-    _registerColor("purple", sf::Color(128, 0, 128));
-    _registerColor("indigo", sf::Color(75, 0, 130));
-    _registerColor("pink", sf::Color(255, 192, 203));
-    _registerColor("lightpink", sf::Color(255, 182, 193));
-    _registerColor("hotpink", sf::Color(255, 105, 180));
-    _registerColor("deeppink", sf::Color(255, 20, 147));
-    _registerColor("palevioletred", sf::Color(219, 112, 147));
-    _registerColor("mediumvioletred", sf::Color(199, 21, 133));
-    _registerColor("white", sf::Color(255, 255, 255));
-    _registerColor("snow", sf::Color(255, 250, 250));
-    _registerColor("honeydew", sf::Color(240, 255, 240));
-    _registerColor("mintcream", sf::Color(245, 255, 250));
-    _registerColor("azure", sf::Color(240, 255, 255));
-    _registerColor("aliceblue", sf::Color(240, 248, 255));
-    _registerColor("ghostwhite", sf::Color(248, 248, 255));
-    _registerColor("whitesmoke", sf::Color(245, 245, 245));
-    _registerColor("seashell", sf::Color(255, 245, 238));
-    _registerColor("beige", sf::Color(245, 245, 220));
-    _registerColor("oldlace", sf::Color(253, 245, 230));
-    _registerColor("floralwhite", sf::Color(255, 250, 240));
-    _registerColor("ivory", sf::Color(255, 255, 240));
-    _registerColor("antiquewhite", sf::Color(250, 235, 215));
-    _registerColor("linen", sf::Color(250, 240, 230));
-    _registerColor("lavenderblush", sf::Color(255, 240, 245));
-    _registerColor("mistyrose", sf::Color(255, 228, 225));
-    _registerColor("gainsboro", sf::Color(220, 220, 220));
-    _registerColor("lightgray", sf::Color(211, 211, 211));
-    _registerColor("silver", sf::Color(192, 192, 192));
-    _registerColor("darkgray", sf::Color(169, 169, 169));
-    _registerColor("gray", sf::Color(128, 128, 128));
-    _registerColor("dimgray", sf::Color(105, 105, 105));
-    _registerColor("lightslategray", sf::Color(119, 136, 153));
-    _registerColor("slategray", sf::Color(112, 128, 144));
-    _registerColor("darkslategray", sf::Color(47, 79, 79));
-    _registerColor("black", sf::Color(0, 0, 0));
-    _registerColor("cornsilk", sf::Color(255, 248, 220));
-    _registerColor("blanchedalmond", sf::Color(255, 235, 205));
-    _registerColor("bisque", sf::Color(255, 228, 196));
-    _registerColor("navajowhite", sf::Color(255, 222, 173));
-    _registerColor("wheat", sf::Color(245, 222, 179));
-    _registerColor("burlywood", sf::Color(222, 184, 135));
-    _registerColor("tan", sf::Color(210, 180, 140));
-    _registerColor("rosybrown", sf::Color(188, 143, 143));
-    _registerColor("sandybrown", sf::Color(244, 164, 96));
-    _registerColor("goldenrod", sf::Color(218, 165, 32));
-    _registerColor("peru", sf::Color(205, 133, 63));
-    _registerColor("chocolate", sf::Color(210, 105, 30));
-    _registerColor("saddlebrown", sf::Color(139, 69, 19));
-    _registerColor("sienna", sf::Color(160, 82, 45));
-    _registerColor("brown", sf::Color(165, 42, 42));
-
     fillStyle("black");
     strokeStyle("black");
 }
@@ -467,17 +471,15 @@ Canvas::~Canvas()
 {
     delete m_window;
     delete m_rectangle;
-    delete m_currentPath;
 
     for (auto it = m_fonts.begin(); it != m_fonts.end(); it++)
-    {
         delete it->second;
-    }
 
     for (auto it = m_texts.begin(); it != m_texts.end(); it++)
-    {
         delete it->second;
-    }
+
+    for (auto it = m_paths.begin(); it < m_paths.end(); it++)
+        delete* it;
 }
 
 void Canvas::hookUpdate(void (*proc)(Canvas&))
@@ -490,13 +492,11 @@ void Canvas::hookRender(void (*proc)(Canvas&))
     m_render = proc;
 }
 
-void Canvas::loadFont(const char* _name, const char* path)
+void Canvas::loadFont(const std::string& name, const std::string& path)
 {
-    auto name = std::string(_name);
-
     if (m_fonts.find(name) != m_fonts.end())
     {
-        printf("Replacing font '%s'\n", _name);
+        printf("Replacing font '%s'\n", name.c_str());
     }
 
     sf::Font* font = new sf::Font();
@@ -567,36 +567,36 @@ void Canvas::initialize()
     }
 }
 
-void Canvas::font(const char* fontString)
+void Canvas::font(const std::string& fontString)
 {
-    m_fontString = std::string(fontString);
+    m_fontString = fontString;
     m_text = _parseFontString(m_fontString);
 }
 
-const char* Canvas::font() const
+const std::string& Canvas::font() const
 {
-    return m_fontString.c_str();
+    return m_fontString;
 }
 
-const char* Canvas::fillStyle() const
+const std::string& Canvas::fillStyle() const
 {
-    return m_fillStyle.c_str();
+    return m_fillStyle;
 }
 
-void Canvas::fillStyle(const char* newStyle)
+void Canvas::fillStyle(const std::string& newStyle)
 {
-    m_fillStyle = std::string(newStyle);
+    m_fillStyle = newStyle;
     m_fillColor = _parseColor(m_fillStyle);
 }
 
-const char* Canvas::strokeStyle() const
+const std::string& Canvas::strokeStyle() const
 {
-    return m_strokeStyle.c_str();
+    return m_strokeStyle;
 }
 
-void Canvas::strokeStyle(const char* newStyle)
+void Canvas::strokeStyle(const std::string& newStyle)
 {
-    m_strokeStyle = std::string(newStyle);
+    m_strokeStyle = newStyle;
     m_strokeColor = _parseColor(m_strokeStyle);
 }
 
@@ -708,7 +708,7 @@ void Canvas::drawImage(const Image& image, float sx, float sy, float sWidth, flo
     sprite->setTextureRect(rect);
 }
 
-void Canvas::fillText(const char* string, float x, float y)
+void Canvas::fillText(const std::string& string, float x, float y)
 {
     if (m_text == nullptr)
     {
@@ -725,7 +725,7 @@ void Canvas::fillText(const char* string, float x, float y)
     m_window->draw(*m_text);
 }
 
-void Canvas::strokeText(const char* string, float x, float y)
+void Canvas::strokeText(const std::string& string, float x, float y)
 {
     if (m_text == nullptr)
     {
@@ -743,7 +743,7 @@ void Canvas::strokeText(const char* string, float x, float y)
     m_window->draw(*m_text);
 }
 
-TextMetrics Canvas::measureText(const char* string)
+TextMetrics Canvas::measureText(const std::string& string)
 {
     m_text->setString(string);
     m_text->setOutlineThickness(0.0f);
@@ -754,9 +754,8 @@ TextMetrics Canvas::measureText(const char* string)
     return { m_text->getLocalBounds().width };
 }
 
-void Canvas::addEventListener(const char* _type, void (*handler)(const sf::Event&))
+void Canvas::addEventListener(const std::string& type, void (*handler)(const sf::Event&))
 {
-    std::string type(_type);
     if (m_handlers.find(type) == m_handlers.end())
     {
         m_handlers.insert(
@@ -768,10 +767,8 @@ void Canvas::addEventListener(const char* _type, void (*handler)(const sf::Event
     m_handlers.at(type).push_back(handler);
 }
 
-void Canvas::dispatchEvent(const char* _type, const sf::Event& event)
+void Canvas::dispatchEvent(const std::string& type, const sf::Event& event)
 {
-    std::string type(_type);
-
     if (m_handlers.find(type) == m_handlers.end())
     {
         return;
@@ -787,56 +784,52 @@ void Canvas::dispatchEvent(const char* _type, const sf::Event& event)
 
 void Canvas::beginPath()
 {
-    if (m_currentPath == nullptr)
-    {
-        m_currentPath = new Path();
-    }
-
-    m_currentPath->reset();
+    m_pathCount = 0;
 }
 
 void Canvas::moveTo(float x, float y)
 {
-    if (m_currentPath == nullptr || !m_currentPath->empty())
+    if (m_pathCount == m_paths.size())
     {
-        return;
+        m_paths.push_back(new Path());
     }
 
-    m_currentPath->addVertex(x, y);
+    m_pathCount++;
+
+    CURRENT_PATH->reset();
+    CURRENT_PATH->addVertex(x, y);
 }
 
 void Canvas::lineTo(float x, float y)
 {
-    if (m_currentPath == nullptr || m_currentPath->empty())
-    {
-        return;
-    }
-
-    m_currentPath->addVertex(x, y);
+    if (m_pathCount == 0) return;
+    CURRENT_PATH->addVertex(x, y);
 }
 
 void Canvas::closePath()
 {
-    m_currentPath->close();
+    if (m_pathCount == 0) return;
+    CURRENT_PATH->close();
 }
 
 void Canvas::stroke()
 {
-    m_currentPath->lineJoin(m_lineJoin);
-    m_currentPath->draw(m_lineWidth, m_strokeColor, m_window);
+    for (size_t i = 0; i < m_pathCount; i++)
+        m_paths.at(i)->draw(m_lineWidth, m_strokeColor, m_lineJoin, m_lineCap, m_window);
+    m_pathCount = 0;
 }
 
-void Canvas::backgroundColor(const char* style)
+void Canvas::backgroundColor(const std::string& style)
 {
-    m_backgroundColor = std::string(style);
+    m_backgroundColor = style;
 }
 
-const char* Canvas::backgroundColor() const
+const std::string& Canvas::backgroundColor() const
 {
-    return m_backgroundColor.c_str();
+    return m_backgroundColor;
 }
 
-void Canvas::lineJoin(const char* join)
+void Canvas::lineJoin(const std::string& join)
 {
     if (m_lineJoinString == join) return;
 
@@ -856,7 +849,43 @@ void Canvas::lineJoin(const char* join)
     }
 }
 
-const char* Canvas::lineJoin() const
+const std::string& Canvas::lineJoin() const
 {
-    return m_lineJoinString.c_str();
+    return m_lineJoinString;
+}
+
+void Canvas::lineCap(const std::string& cap)
+{
+    if (m_lineCapString == cap) return;
+
+    m_lineCapString = cap;
+
+    if (m_lineCapString == "square")
+    {
+        m_lineCap = LineCap::Square;
+    }
+    else if (m_lineCapString == "round")
+    {
+        m_lineCap = LineCap::Round;
+    }
+    else
+    {
+        m_lineCap = LineCap::Butt;
+    }
+}
+
+const std::string& Canvas::lineCap() const
+{
+    return m_lineCapString;
+}
+
+void Canvas::arc(float x, float y, float radius, float startAngle, float endAngle, bool anticlockwise)
+{
+    if (m_paths.size() == 0)
+        m_paths.push_back(new Path());
+
+    if (m_pathCount == 0) m_pathCount = 1;
+
+    CURRENT_PATH->reset();
+    CURRENT_PATH->arc(x, y, radius, startAngle, endAngle, anticlockwise);
 }

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _CANVAS_HPP
+#define _CANVAS_HPP
 
 #include <SFML/Graphics.hpp>
 
@@ -6,6 +7,7 @@ class Image;
 class Path;
 struct TextMetrics;
 enum class LineJoin;
+enum class LineCap;
 
 class Canvas
 {
@@ -13,13 +15,13 @@ public:
     Canvas();
     ~Canvas();
 
-    void loadFont(const char*, const char*);
+    void loadFont(const std::string&, const std::string&);
 
-    void fillStyle(const char*);
-    const char* fillStyle() const;
+    void fillStyle(const std::string&);
+    const std::string& fillStyle() const;
 
-    void strokeStyle(const char*);
-    const char* strokeStyle() const;
+    void strokeStyle(const std::string&);
+    const std::string& strokeStyle() const;
 
     void lineWidth(float);
     float lineWidth() const;
@@ -30,11 +32,14 @@ public:
     void height(unsigned int);
     unsigned int height() const;
 
-    void lineJoin(const char*);
-    const char* lineJoin() const;
+    void lineJoin(const std::string&);
+    const std::string& lineJoin() const;
 
-    void backgroundColor(const char*);
-    const char* backgroundColor() const;
+    void lineCap(const std::string&);
+    const std::string& lineCap() const;
+
+    void backgroundColor(const std::string&);
+    const std::string& backgroundColor() const;
 
     void clearRect();
     void clearRect(float, float, float, float);
@@ -50,22 +55,24 @@ public:
     void hookUpdate(void (*proc)(Canvas&));
     void hookRender(void (*proc)(Canvas&));
 
-    void addEventListener(const char*, void (*proc)(const sf::Event&));
-    void dispatchEvent(const char*, const sf::Event&);
+    void addEventListener(const std::string&, void (*proc)(const sf::Event&));
+    void dispatchEvent(const std::string&, const sf::Event&);
 
-    void font(const char*);
-    const char* font() const;
+    void font(const std::string&);
+    const std::string& font() const;
 
-    void fillText(const char*, float, float);
-    void strokeText(const char*, float, float);
+    void fillText(const std::string&, float, float);
+    void strokeText(const std::string&, float, float);
 
     void beginPath();
     void moveTo(float, float);
     void lineTo(float, float);
     void stroke();
     void closePath();
+
+    void arc(float, float, float, float, float, bool anticlockwise = false);
     
-    TextMetrics measureText(const char*);
+    TextMetrics measureText(const std::string&);
 
 private:
     sf::RenderWindow* m_window;
@@ -78,15 +85,17 @@ private:
     std::string m_fillStyle, m_strokeStyle, m_backgroundColor;
     sf::Color m_fillColor, m_strokeColor;
 
-    std::string m_lineJoinString;
+    std::string m_lineJoinString, m_lineCapString;
+
     LineJoin m_lineJoin;
+    LineCap m_lineCap;
 
     float m_lineWidth;
 
     unsigned int m_width, m_height;
 
-    void (*m_render)(Canvas&) = nullptr;
-    void (*m_update)(Canvas&) = nullptr;
+    void (*m_render)(Canvas&);
+    void (*m_update)(Canvas&);
 
     std::map<std::string, std::vector<void(*)(const sf::Event&)>> m_handlers;
 
@@ -94,10 +103,10 @@ private:
     std::string m_fontString;
     sf::Text* _parseFontString(std::string&);
 
-    sf::Color _parseColor(std::string&);
-    void _registerColor(const char*, const sf::Color&);
+    sf::Color _parseColor(std::string);
 
     std::vector<Path*> m_paths;
-    Path* m_currentPath = nullptr;
+    size_t m_pathCount;
 };
 
+#endif

@@ -1,14 +1,7 @@
-#include <string>
-#include <iostream>
-#include <map>
-#include <cctype>
+#define _USE_MATH_DEFINES
 #include "Canvas.hpp"
-#include "Image.hpp"
-#include "TextMetrics.hpp"
-#include "Path.hpp"
-
-Image image;
-float l;
+//#include "Image.hpp"
+//#include "TextMetrics.hpp"
 
 void update(Canvas& canvas)
 {
@@ -80,7 +73,16 @@ void update(Canvas& canvas)
 void render(Canvas& canvas)
 {
     canvas.clearRect();
+
     canvas.lineWidth(10);
+    canvas.beginPath();
+    canvas.arc(50, 50, 25, M_PI, 2*M_PI);
+    canvas.stroke();
+
+    /*canvas.strokeStyle("darksalmon");
+    canvas.fillStyle(canvas.strokeStyle());
+    canvas.lineWidth(10);
+    canvas.lineJoin("miter");
     canvas.strokeRect(75, 140, 150, 110);
     canvas.fillRect(130, 190, 40, 60);
     canvas.beginPath();
@@ -89,7 +91,28 @@ void render(Canvas& canvas)
     canvas.lineTo(250, 140);
     canvas.closePath();
     canvas.stroke();
-;}
+
+    canvas.lineWidth(1);
+    canvas.strokeStyle("#09f");
+    canvas.beginPath();
+    canvas.moveTo(10, 10);
+    canvas.lineTo(140, 10);
+    canvas.moveTo(10, 140);
+    canvas.lineTo(140, 140);
+    canvas.stroke();
+
+    canvas.strokeStyle("black");
+    canvas.lineWidth(15);
+
+    const char* lineCap[] = {"butt", "round", "square"};
+    for (uint8_t i = 0; i < 3; i++) {
+        canvas.lineCap(lineCap[i]);
+        canvas.beginPath();
+        canvas.moveTo(25 + i * 50, 10);
+        canvas.lineTo(25 + i * 50, 140);
+        canvas.stroke();
+    }*/
+}
 
 int main(int argc, char** argv)
 {
@@ -103,6 +126,8 @@ int main(int argc, char** argv)
         
     });*/
 
+    //canvas.lineJoin("round");
+
     canvas.width(800);
     canvas.height(600);
 
@@ -110,4 +135,6 @@ int main(int argc, char** argv)
     canvas.hookRender(&render);
 
     canvas.initialize();
+
+    return 0;
 }
