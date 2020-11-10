@@ -425,16 +425,17 @@ void Path::arc(float x, float y, float radius, float startAngle, float endAngle,
     if (m_closed) return;
 
     const sf::Vector2f center(x, y);
-    float interval = 0.1f;
-    float extra = 0.001f;
+    const float interval = 0.1f;
+    const float extra = 0.001f;
 
     if (anticlockwise)
     {
-        interval *= -1;
-        extra *= -1;
-        float temp = startAngle;
-        startAngle = endAngle;
-        endAngle = temp;
+        const float d = endAngle - startAngle;
+        startAngle += d;
+        endAngle += TAU - d;
+
+        if (startAngle == endAngle)
+            startAngle = 0;
     }
 
     // HACK: Adding an extra vertex to make the edges look square?
@@ -451,7 +452,7 @@ void Path::arc(float x, float y, float radius, float startAngle, float endAngle,
         );
 
         m_vertices.push_back(center + v);
-    }
+    }    
 
     m_vertices.push_back(center + radius * sf::Vector2f(
         static_cast<float>(cos(endAngle)),

@@ -74,10 +74,36 @@ void render(Canvas& canvas)
 {
     canvas.clearRect();
 
-    canvas.lineWidth(10);
+    /*canvas.lineWidth(10);
     canvas.beginPath();
     canvas.arc(50, 50, 25, M_PI, 2*M_PI);
-    canvas.stroke();
+    canvas.stroke();*/
+
+    //canvas.lineWidth(5);
+    for (uint8_t i = 0; i <= 1; i++)
+    {
+        for (uint8_t j = 0; j <= 2;j++)
+        {
+            canvas.beginPath();
+            auto x = 25 + j * 50;
+            auto y = 25 + i * 50;
+            auto radius = 20;
+            auto startAngle = 0;
+            auto endAngle = M_PI + (M_PI * j) / 2;
+            auto anticlockwise = i % 2 == 1;
+
+            canvas.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+
+            canvas.stroke();
+
+            /*if (i > 1) {
+                ctx.fill();
+            }
+            else {
+                ctx.stroke();
+            }*/
+        }
+    }
 
     /*canvas.strokeStyle("darksalmon");
     canvas.fillStyle(canvas.strokeStyle());
