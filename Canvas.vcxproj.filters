@@ -44,5 +44,8 @@
     <ClInclude Include="Path.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="earcut.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

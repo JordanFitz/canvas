@@ -68,6 +68,7 @@ public:
     void moveTo(float, float);
     void lineTo(float, float);
     void stroke();
+    void fill();
     void closePath();
 
     void arc(float, float, float, float, float, bool anticlockwise = false);

@@ -3,6 +3,8 @@
 //#include "Image.hpp"
 //#include "TextMetrics.hpp"
 
+std::vector<std::pair<float, float>> points;
+
 void update(Canvas& canvas)
 {
     
@@ -74,13 +76,58 @@ void render(Canvas& canvas)
 {
     canvas.clearRect();
 
+    size_t i = 0;
+    for (auto& it : points)
+    {
+
+        if (i == 0)
+        {
+            canvas.beginPath();
+            canvas.moveTo(it.first, it.second);
+        }
+        else
+        {
+            canvas.lineTo(it.first, it.second);
+        }
+
+        i++;
+    }
+
+    canvas.closePath();
+
+    canvas.strokeStyle("red");
+    canvas.fill();
+    canvas.stroke();
+
+    /*canvas.beginPath();
+    canvas.moveTo(50, 50);
+    canvas.lineTo(200, 100);
+    canvas.lineTo(150, 150);
+    canvas.lineTo(250, 250);
+    canvas.lineTo(250, 50);
+    canvas.closePath();
+    canvas.fill();
+    canvas.strokeStyle("red");
+    canvas.stroke();*/
+
+    /*canvas.lineWidth(4);
+    canvas.strokeStyle("Red");
+    canvas.beginPath();
+    canvas.moveTo(50, 50);
+    canvas.lineTo(200, 100);
+    canvas.lineTo(150, 150);
+    canvas.lineTo(250, 250);
+    canvas.lineTo(250, 50);
+    canvas.closePath();
+    canvas.stroke();*/
+
     /*canvas.lineWidth(10);
     canvas.beginPath();
     canvas.arc(50, 50, 25, M_PI, 2*M_PI);
     canvas.stroke();*/
 
     //canvas.lineWidth(5);
-    for (uint8_t i = 0; i <= 1; i++)
+    /*for (uint8_t i = 0; i <= 3; i++)
     {
         for (uint8_t j = 0; j <= 2;j++)
         {
@@ -94,16 +141,16 @@ void render(Canvas& canvas)
 
             canvas.arc(x, y, radius, startAngle, endAngle, anticlockwise);
 
-            canvas.stroke();
-
-            /*if (i > 1) {
-                ctx.fill();
+            if (i > 1)
+            {
+                canvas.fill();
             }
-            else {
-                ctx.stroke();
-            }*/
+            else
+            {
+                canvas.stroke();
+            }
         }
-    }
+    }*/
 
     /*canvas.strokeStyle("darksalmon");
     canvas.fillStyle(canvas.strokeStyle());
@@ -151,6 +198,10 @@ int main(int argc, char** argv)
     /*canvas.addEventListener("keypress", [](const sf::Event& event) {
         
     });*/
+
+    canvas.addEventListener("mousedown", [](const sf::Event& event) {
+        points.push_back(std::make_pair(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)));
+    });
 
     //canvas.lineJoin("round");
 

@@ -26,6 +26,7 @@ public:
     ~Path();
 
     void arc(float, float, float, float, float, bool);
+    void fill(sf::Color, sf::RenderWindow*);
 
     void reset();
     void close();
@@ -33,7 +34,7 @@ public:
 
     bool empty() const;
 
-    void draw(float, sf::Color, LineJoin, LineCap, sf::RenderWindow*);
+    void stroke(float, sf::Color, LineJoin, LineCap, sf::RenderWindow*);
 
 private:
     std::vector<sf::Vector2f> m_vertices;

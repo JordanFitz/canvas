@@ -151,6 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Canvas.hpp" />
+    <ClInclude Include="earcut.hpp" />
     <ClInclude Include="Image.hpp" />
     <ClInclude Include="Path.hpp" />
     <ClInclude Include="TextMetrics.hpp" />

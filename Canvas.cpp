@@ -815,8 +815,15 @@ void Canvas::closePath()
 void Canvas::stroke()
 {
     for (size_t i = 0; i < m_pathCount; i++)
-        m_paths.at(i)->draw(m_lineWidth, m_strokeColor, m_lineJoin, m_lineCap, m_window);
-    m_pathCount = 0;
+        m_paths.at(i)->stroke(m_lineWidth, m_strokeColor, m_lineJoin, m_lineCap, m_window);
+    //m_pathCount = 0;
+}
+
+void Canvas::fill()
+{
+    for (size_t i = 0; i < m_pathCount; i++)
+        m_paths.at(i)->fill(m_fillColor, m_window);
+    //m_pathCount = 0;
 }
 
 void Canvas::backgroundColor(const std::string& style)

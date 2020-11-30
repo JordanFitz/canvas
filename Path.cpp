@@ -4,6 +4,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "earcut.hpp"
 #include "Path.hpp"
 
 Path::Path() :
@@ -343,7 +344,7 @@ void Path::_maybeCompute(float lineWidth, sf::Color color, LineJoin join, LineCa
     m_computed = true;
 }
 
-void Path::draw(float lineWidth, sf::Color color, LineJoin join, LineCap cap, sf::RenderWindow* window)
+void Path::stroke(float lineWidth, sf::Color color, LineJoin join, LineCap cap, sf::RenderWindow* window)
 {
     if (lineWidth > 1.0f)
     {
@@ -381,6 +382,21 @@ void Path::draw(float lineWidth, sf::Color color, LineJoin join, LineCap cap, sf
     m_oldVertices = m_vertices;
 }
 
+void Path::fill(sf::Color color, sf::RenderWindow* window)
+{
+    std::vector<std::vector<sf::Vector2f>> polygon = { m_vertices };
+    std::vector<uint32_t> indices = mapbox::earcut<uint32_t>(polygon);
+    sf::VertexArray vertices(sf::Triangles);
+
+    for (auto& it : indices)
+    {
+        auto v = sf::Vertex(m_vertices.at(it), color);
+        vertices.append(v);
+    }
+
+    window->draw(vertices);
+}
+
 bool Path::empty() const
 {
     return m_vertices.empty();
@@ -390,8 +406,8 @@ sf::Vector2f Path::_pointOfIntersection(double a1, sf::Vector2f p1, double a2, s
 {
     const double dy = static_cast<double>(p2.y) - static_cast<double>(p1.y);
 
-    const double m1 = static_cast<float>(tan(a1)),
-        m2 = static_cast<float>(tan(a2)),
+    const double m1 = tan(a1),
+        m2 = tan(a2),
         h = ((m2 * p2.x - m1 * p1.x) - dy) / (m2 - m1),
         k = m1 * (h - p1.x) + p1.y;
 
@@ -432,7 +448,7 @@ void Path::arc(float x, float y, float radius, float startAngle, float endAngle,
     {
         const float d = endAngle - startAngle;
         startAngle += d;
-        endAngle += TAU - d;
+        endAngle += static_cast<float>(TAU) - d;
 
         if (startAngle == endAngle)
             startAngle = 0;
