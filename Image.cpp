@@ -1,6 +1,7 @@
 #include "Canvas.hpp"
 #include "Image.hpp"
 
+namespace Canvas {
 Image::Image()
 {
     m_sprite = new sf::Sprite();
@@ -28,4 +29,5 @@ void Image::src(const char* source)
 sf::Sprite* Image::getSprite() const
 {
     return m_sprite;
+}
 }

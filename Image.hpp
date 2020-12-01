@@ -1,7 +1,10 @@
-#pragma once
+#ifndef _CANVAS_IMAGE_HPP
+#define _CANVAS_IMAGE_HPP
 
 #include <SFML/Graphics.hpp>
 
+namespace Canvas
+{
 class Image
 {
 public:
@@ -17,3 +20,5 @@ private:
     sf::Sprite* m_sprite;
     sf::Texture* m_texture;
 };
+}
+#endif

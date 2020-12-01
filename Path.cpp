@@ -5,8 +5,11 @@
 #include <SFML/Graphics.hpp>
 
 #include "earcut.hpp"
+#include "Canvas.hpp"
+#include "CanvasGradient.hpp"
 #include "Path.hpp"
 
+namespace Canvas {
 Path::Path() :
     m_closed(false),
     m_computed(false),
@@ -24,7 +27,7 @@ Path::~Path()
 
     for (auto it = m_caps.begin(); it < m_caps.end(); it++)
         delete* it;
-    
+
     delete m_lineWithNoThickness;
 
     m_vertices.clear();
@@ -58,7 +61,7 @@ void Path::addVertex(float x, float y)
 }
 
 void Path::_computeVertices(float lineWidth, sf::Color color)
-{   
+{
     if (m_vertices.size() < 2) return;
 
     size_t i = 0;
@@ -147,7 +150,7 @@ void Path::_computeConnectors(float lineWidth, sf::Color color, LineJoin joinTyp
             {
                 vertexArray = new sf::VertexArray(sf::Quads, 8);
             }
-            else if(joinType == LineJoin::Bevel)
+            else if (joinType == LineJoin::Bevel)
             {
                 vertexArray = new sf::VertexArray(sf::Quads, 4);
             }
@@ -212,7 +215,7 @@ void Path::_computeConnectors(float lineWidth, sf::Color color, LineJoin joinTyp
             (*vertexArray)[5] = intersection2;
             (*vertexArray)[6] = next[1].position;
             (*vertexArray)[7] = next[0].position;
-        } 
+        }
         else if (joinType == LineJoin::Bevel)
         {
             (*vertexArray)[0] = current[2].position;
@@ -222,13 +225,13 @@ void Path::_computeConnectors(float lineWidth, sf::Color color, LineJoin joinTyp
         }
         else if (joinType == LineJoin::Round)
         {
-            _populateCircle(vertexArray, m_vertices.at(i+1), lineWidth / 2.0f);
+            _populateCircle(vertexArray, m_vertices.at(i + 1), lineWidth / 2.0f);
         }
 
         for (uint8_t i = 0; i < vertexArray->getVertexCount(); i++)
             (*vertexArray)[i].color = color;
 
-        if(m_connectors.size() < connectorCount)
+        if (m_connectors.size() < connectorCount)
             m_connectors.push_back(vertexArray);
 
         i++;
@@ -276,7 +279,7 @@ void Path::_computeCaps(float lineWidth, sf::Color color, LineCap capType)
         _populateCircle(cap1, firstVertex, multiplier);
         _populateCircle(cap2, lastVertex, multiplier);
     }
-    else if(capType == LineCap::Square)
+    else if (capType == LineCap::Square)
     {
         if (m_caps.size() == 0)
         {
@@ -362,7 +365,7 @@ void Path::stroke(float lineWidth, sf::Color color, LineJoin join, LineCap cap, 
             window->draw(*m_caps.at(1));
         }
     }
-    else if(lineWidth <= 1.0f)
+    else if (lineWidth <= 1.0f)
     {
         if (m_lineWithNoThickness == nullptr)
             m_lineWithNoThickness = new sf::VertexArray(sf::LinesStrip, m_vertices.size());
@@ -382,7 +385,7 @@ void Path::stroke(float lineWidth, sf::Color color, LineJoin join, LineCap cap, 
     m_oldVertices = m_vertices;
 }
 
-void Path::fill(sf::Color color, sf::RenderWindow* window)
+void Path::fill(FillStyle style, sf::RenderWindow* window)
 {
     std::vector<std::vector<sf::Vector2f>> polygon = { m_vertices };
     std::vector<uint32_t> indices = mapbox::earcut<uint32_t>(polygon);
@@ -390,11 +393,18 @@ void Path::fill(sf::Color color, sf::RenderWindow* window)
 
     for (auto& it : indices)
     {
-        auto v = sf::Vertex(m_vertices.at(it), color);
+        auto v = sf::Vertex(m_vertices.at(it), style.color);
         vertices.append(v);
     }
 
-    window->draw(vertices);
+    if (style.type == FillStyle::Type::Color)
+    {
+        window->draw(vertices);
+    }
+    else
+    {
+        window->draw(vertices, CanvasGradient::getShader(style.gradient));
+    }
 }
 
 bool Path::empty() const
@@ -468,7 +478,7 @@ void Path::arc(float x, float y, float radius, float startAngle, float endAngle,
         );
 
         m_vertices.push_back(center + v);
-    }    
+    }
 
     m_vertices.push_back(center + radius * sf::Vector2f(
         static_cast<float>(cos(endAngle)),
@@ -482,4 +492,5 @@ void Path::arc(float x, float y, float radius, float startAngle, float endAngle,
     ));
 
     return;
+}
 }

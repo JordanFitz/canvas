@@ -3,11 +3,27 @@
 
 #include <SFML/Graphics.hpp>
 
+namespace Canvas
+{
 class Image;
 class Path;
+class CanvasGradient;
 struct TextMetrics;
 enum class LineJoin;
 enum class LineCap;
+
+struct FillStyle
+{
+    enum class Type {
+        Gradient,
+        Color
+    };
+
+    Type type = Type::Color;
+
+    sf::Color color;
+    const CanvasGradient* gradient;
+};
 
 class Canvas
 {
@@ -16,6 +32,8 @@ public:
     ~Canvas();
 
     void loadFont(const std::string&, const std::string&);
+
+    void fillStyle(const CanvasGradient&);
 
     void fillStyle(const std::string&);
     const std::string& fillStyle() const;
@@ -51,13 +69,6 @@ public:
     void drawImage(const Image&, float, float, float, float);
     void drawImage(const Image&, float, float, float, float, float, float, float, float);
 
-    void initialize();
-    void hookUpdate(void (*proc)(Canvas&));
-    void hookRender(void (*proc)(Canvas&));
-
-    void addEventListener(const std::string&, void (*proc)(const sf::Event&));
-    void dispatchEvent(const std::string&, const sf::Event&);
-
     void font(const std::string&);
     const std::string& font() const;
 
@@ -72,8 +83,18 @@ public:
     void closePath();
 
     void arc(float, float, float, float, float, bool anticlockwise = false);
-    
+
     TextMetrics measureText(const std::string&);
+    CanvasGradient createLinearGradient(float, float, float, float);
+
+    sf::Color parseColor(std::string);
+
+    void initialize();
+    void hookUpdate(void (*proc)(Canvas&));
+    void hookRender(void (*proc)(Canvas&));
+
+    void addEventListener(const std::string&, void (*proc)(const sf::Event&));
+    void dispatchEvent(const std::string&, const sf::Event&);
 
 private:
     sf::RenderWindow* m_window;
@@ -83,13 +104,15 @@ private:
     std::map<std::string, sf::Font*> m_fonts;
     std::map<std::string, sf::Text*> m_texts;
 
-    std::string m_fillStyle, m_strokeStyle, m_backgroundColor;
-    sf::Color m_fillColor, m_strokeColor;
+    std::string m_fillStyleString, m_strokeStyle, m_backgroundColor;
+    sf::Color m_strokeColor;
 
     std::string m_lineJoinString, m_lineCapString;
 
     LineJoin m_lineJoin;
     LineCap m_lineCap;
+
+    FillStyle m_fillStyle;
 
     float m_lineWidth;
 
@@ -104,10 +127,9 @@ private:
     std::string m_fontString;
     sf::Text* _parseFontString(std::string&);
 
-    sf::Color _parseColor(std::string);
-
     std::vector<Path*> m_paths;
     size_t m_pathCount;
 };
+}
 
 #endif

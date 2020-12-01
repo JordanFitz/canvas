@@ -1,11 +1,13 @@
 #define _USE_MATH_DEFINES
 #include "Canvas.hpp"
+#include "CanvasGradient.hpp"
 //#include "Image.hpp"
 //#include "TextMetrics.hpp"
 
-std::vector<std::pair<float, float>> points;
+//std::vector<std::pair<float, float>> points;
+Canvas::CanvasGradient gradient;
 
-void update(Canvas& canvas)
+void update(Canvas::Canvas& canvas)
 {
     
 }
@@ -72,14 +74,23 @@ void update(Canvas& canvas)
 //    l += 0.001;
 //}
 
-void render(Canvas& canvas)
+void render(Canvas::Canvas& canvas)
 {
     canvas.clearRect();
 
-    size_t i = 0;
+    canvas.fillStyle(gradient);
+    canvas.beginPath();
+    canvas.moveTo(50, 50);
+    canvas.lineTo(150, 50);
+    canvas.lineTo(150, 150);
+    canvas.lineTo(50, 150);
+    canvas.lineTo(100, 100);
+    canvas.closePath();
+    canvas.fill();
+
+    /*size_t i = 0;
     for (auto& it : points)
     {
-
         if (i == 0)
         {
             canvas.beginPath();
@@ -97,7 +108,7 @@ void render(Canvas& canvas)
 
     canvas.strokeStyle("red");
     canvas.fill();
-    canvas.stroke();
+    canvas.stroke();*/
 
     /*canvas.beginPath();
     canvas.moveTo(50, 50);
@@ -189,7 +200,7 @@ void render(Canvas& canvas)
 
 int main(int argc, char** argv)
 {
-    Canvas canvas;
+    Canvas::Canvas canvas;
 
     /*image.src("W:\\pictures\\test4.jpg");
     canvas.loadFont("Arial", "W:\\dev\\canvas\\arial.ttf");
@@ -199,11 +210,16 @@ int main(int argc, char** argv)
         
     });*/
 
-    canvas.addEventListener("mousedown", [](const sf::Event& event) {
+    /*canvas.addEventListener("mousedown", [](const sf::Event& event) {
         points.push_back(std::make_pair(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)));
-    });
+    });*/
 
     //canvas.lineJoin("round");
+
+    gradient = canvas.createLinearGradient(40, 40, 160, 160);
+    gradient.addColorStop(0, "green");
+    gradient.addColorStop(.5, "cyan");
+    gradient.addColorStop(1, "green");
 
     canvas.width(800);
     canvas.height(600);

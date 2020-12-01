@@ -5,12 +5,15 @@
 #include "Image.hpp"
 #include "Path.hpp"
 #include "TextMetrics.hpp"
-#include "Canvas.hpp"
+#include "CanvasGradient.hpp"
 #include "util.hpp"
+
+#include "Canvas.hpp"
 
 #define CURRENT_PATH m_paths.at(m_pathCount - 1)
 
-sf::Color Canvas::_parseColor(std::string style)
+namespace Canvas {
+sf::Color Canvas::parseColor(std::string style)
 {
     auto result = sf::Color::Black;
 
@@ -240,7 +243,7 @@ sf::Color Canvas::_parseColor(std::string style)
                     {
                         double component = round(std::stod(part) * 255.0f);
                         components[i] = static_cast<sf::Uint8>(component);
-                    } 
+                    }
                     else
                     {
                         components[i] = static_cast<sf::Uint8>(std::stoi(part));
@@ -254,7 +257,7 @@ sf::Color Canvas::_parseColor(std::string style)
             if (part.size() > 0)
             {
                 trim(part);
-                
+
                 if (i == 3)
                 {
                     double component = round(std::stod(part) * 255.0f);
@@ -275,7 +278,7 @@ sf::Color Canvas::_parseColor(std::string style)
             }
         }
     }
-    if(!parsed)
+    if (!parsed)
     {
         fprintf(stderr, "Got an invalid color string: %s\n", originalStyle.c_str());
     }
@@ -412,7 +415,7 @@ sf::Text* Canvas::_parseFontString(std::string& fontString)
 
         text->setFont(*m_fonts.at(family));
         text->setCharacterSize(size);
-        
+
         sf::Uint32 style = 0;
 
         if (bold) style |= sf::Text::Bold;
@@ -523,6 +526,8 @@ void Canvas::initialize()
                     static_cast<float>(event.size.height)
                 );
                 m_window->setView(sf::View(visibleArea));
+
+                CanvasGradient::setHeight(static_cast<float>(event.size.height));
             }
 
             switch (event.type)
@@ -560,8 +565,8 @@ void Canvas::initialize()
             }
         }
 
-        if(m_update != nullptr) m_update(*this);
-        if(m_render != nullptr) m_render(*this);
+        if (m_update != nullptr) m_update(*this);
+        if (m_render != nullptr) m_render(*this);
 
         m_window->display();
     }
@@ -580,13 +585,21 @@ const std::string& Canvas::font() const
 
 const std::string& Canvas::fillStyle() const
 {
-    return m_fillStyle;
+    return m_fillStyleString;
 }
 
 void Canvas::fillStyle(const std::string& newStyle)
 {
-    m_fillStyle = newStyle;
-    m_fillColor = _parseColor(m_fillStyle);
+    m_fillStyleString = newStyle;
+    m_fillStyle.type = FillStyle::Type::Color;
+    m_fillStyle.color = parseColor(newStyle);
+    //m_fillColor = parseColor(m_fillStyle);
+}
+
+void Canvas::fillStyle(const CanvasGradient& gradient)
+{
+    m_fillStyle.type = FillStyle::Type::Gradient;
+    m_fillStyle.gradient = &gradient;
 }
 
 const std::string& Canvas::strokeStyle() const
@@ -597,7 +610,7 @@ const std::string& Canvas::strokeStyle() const
 void Canvas::strokeStyle(const std::string& newStyle)
 {
     m_strokeStyle = newStyle;
-    m_strokeColor = _parseColor(m_strokeStyle);
+    m_strokeColor = parseColor(m_strokeStyle);
 }
 
 void Canvas::lineWidth(float newWidth)
@@ -638,9 +651,17 @@ void Canvas::fillRect(float x, float y, float width, float height)
 {
     m_rectangle->setSize(sf::Vector2f(width, height));
     m_rectangle->setPosition(sf::Vector2f(x, y));
-    m_rectangle->setFillColor(m_fillColor);
+    m_rectangle->setFillColor(m_fillStyle.color);
     m_rectangle->setOutlineThickness(0.0f);
-    m_window->draw(*m_rectangle);
+
+    if (m_fillStyle.type == FillStyle::Type::Color)
+    {
+        m_window->draw(*m_rectangle);
+    }
+    else
+    {
+        m_window->draw(*m_rectangle, CanvasGradient::getShader(m_fillStyle.gradient));
+    }
 }
 
 void Canvas::strokeRect(float x, float y, float width, float height)
@@ -656,7 +677,7 @@ void Canvas::strokeRect(float x, float y, float width, float height)
 
 void Canvas::clearRect()
 {
-    auto color = _parseColor(m_backgroundColor);
+    auto color = parseColor(m_backgroundColor);
     m_window->clear(color);
 }
 
@@ -716,13 +737,20 @@ void Canvas::fillText(const std::string& string, float x, float y)
         return;
     }
 
-    m_text->setFillColor(m_fillColor);
+    m_text->setFillColor(m_fillStyle.color);
     m_text->setOutlineThickness(0.0f);
 
     m_text->setPosition(sf::Vector2f(x, y));
     m_text->setString(string);
 
-    m_window->draw(*m_text);
+    if (m_fillStyle.type == FillStyle::Type::Color)
+    {
+        m_window->draw(*m_text);
+    }
+    else
+    {
+        m_window->draw(*m_text, CanvasGradient::getShader(m_fillStyle.gradient));
+    }
 }
 
 void Canvas::strokeText(const std::string& string, float x, float y)
@@ -815,15 +843,17 @@ void Canvas::closePath()
 void Canvas::stroke()
 {
     for (size_t i = 0; i < m_pathCount; i++)
+    {
         m_paths.at(i)->stroke(m_lineWidth, m_strokeColor, m_lineJoin, m_lineCap, m_window);
-    //m_pathCount = 0;
+    }
 }
 
 void Canvas::fill()
 {
     for (size_t i = 0; i < m_pathCount; i++)
-        m_paths.at(i)->fill(m_fillColor, m_window);
-    //m_pathCount = 0;
+    {
+        m_paths.at(i)->fill(m_fillStyle, m_window);
+    }
 }
 
 void Canvas::backgroundColor(const std::string& style)
@@ -895,4 +925,10 @@ void Canvas::arc(float x, float y, float radius, float startAngle, float endAngl
 
     CURRENT_PATH->reset();
     CURRENT_PATH->arc(x, y, radius, startAngle, endAngle, anticlockwise);
+}
+
+CanvasGradient Canvas::createLinearGradient(float x1, float y1, float x2, float y2)
+{
+    return CanvasGradient(this, x1, y1, x2, y2);
+}
 }

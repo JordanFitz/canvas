@@ -1,6 +1,10 @@
 #ifndef _PATH_HPP
 #define _PATH_HPP
 
+namespace Canvas {
+struct FillStyle;
+class CanvasGradient;
+
 enum class LineJoin
 {
     Round,
@@ -26,7 +30,6 @@ public:
     ~Path();
 
     void arc(float, float, float, float, float, bool);
-    void fill(sf::Color, sf::RenderWindow*);
 
     void reset();
     void close();
@@ -35,6 +38,7 @@ public:
     bool empty() const;
 
     void stroke(float, sf::Color, LineJoin, LineCap, sf::RenderWindow*);
+    void fill(FillStyle, sf::RenderWindow*);
 
 private:
     std::vector<sf::Vector2f> m_vertices;
@@ -58,5 +62,6 @@ private:
 
     void _populateCircle(sf::VertexArray*, sf::Vector2f, float);
 };
+}
 
 #endif
