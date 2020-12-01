@@ -1,4 +1,4 @@
-#include "Canvas.hpp"
+#include "Context.hpp"
 #include "Image.hpp"
 
 namespace Canvas {

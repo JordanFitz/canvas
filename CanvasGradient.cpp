@@ -1,7 +1,7 @@
 #include <string>
 #include <SFML\Graphics.hpp>
 
-#include "Canvas.hpp"
+#include "Context.hpp"
 #include "CanvasGradient.hpp"
 
 namespace Canvas {
@@ -28,7 +28,7 @@ CanvasGradient::CanvasGradient():
     m_canvas(nullptr), m_start(0, 0), m_end(0, 0)
 {}
 
-CanvasGradient::CanvasGradient(Canvas* canvas, const float& x1, const float& y1, const float& x2, const float& y2) :
+CanvasGradient::CanvasGradient(Context* canvas, const float& x1, const float& y1, const float& x2, const float& y2) :
     m_canvas(canvas), m_start(x1, y1), m_end(x2, y2)
 {
     if (!_shaderLoaded)

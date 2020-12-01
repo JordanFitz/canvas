@@ -5,7 +5,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "earcut.hpp"
-#include "Canvas.hpp"
+#include "Context.hpp"
 #include "CanvasGradient.hpp"
 #include "Path.hpp"
 

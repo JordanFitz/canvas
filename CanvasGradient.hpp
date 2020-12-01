@@ -50,7 +50,7 @@ const std::string VERT_SHADER = "void main()\
     gl_Position = ftransform();\
 }";
 
-class Canvas;
+class Context;
 
 class CanvasGradient
 {
@@ -59,7 +59,7 @@ public:
     static void setHeight(const float&);
 
     CanvasGradient();
-    CanvasGradient(Canvas*, const float&, const float&, const float&, const float&);
+    CanvasGradient(Context*, const float&, const float&, const float&, const float&);
     ~CanvasGradient();
 
     void addColorStop(const float&, const std::string&);
@@ -68,7 +68,7 @@ private:
     static sf::Shader _shader;
     static bool _shaderLoaded;
 
-    Canvas* m_canvas;
+    Context* m_canvas;
 
     sf::Vector2f m_start, m_end;
 

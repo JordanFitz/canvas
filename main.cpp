@@ -76,17 +76,19 @@ void update(Canvas::Canvas& canvas)
 
 void render(Canvas::Canvas& canvas)
 {
-    canvas.clearRect();
-    canvas.fillStyle(gradient);
+    auto& context = canvas.getContext();
+
+    context.clearRect();
+    context.fillStyle(gradient);
     
-    canvas.beginPath();
-    canvas.moveTo(20, 20);
-    canvas.lineTo(50, 50);
-    canvas.lineTo(100, 75);
-    canvas.rect(110, 85, 50, 50);
-    canvas.lineTo(150, 20);
-    canvas.lineWidth(3);
-    canvas.stroke();
+    context.beginPath();
+    context.moveTo(20, 20);
+    context.lineTo(50, 50);
+    context.lineTo(100, 75);
+    context.rect(110, 85, 50, 50);
+    context.lineTo(150, 20);
+    context.lineWidth(3);
+    context.fill();
 
     /*size_t i = 0;
     for (auto& it : points)
@@ -216,7 +218,8 @@ int main(int argc, char** argv)
 
     //canvas.lineJoin("round");
 
-    gradient = canvas.createLinearGradient(40, 40, 160, 160);
+    Canvas::Context& context = canvas.getContext();
+    gradient = context.createLinearGradient(40, 40, 160, 160);
     gradient.addColorStop(0, "green");
     gradient.addColorStop(.5, "cyan");
     gradient.addColorStop(1, "green");
@@ -227,7 +230,5 @@ int main(int argc, char** argv)
     canvas.hookUpdate(&update);
     canvas.hookRender(&render);
 
-    canvas.initialize();
-
-    return 0;
+    return canvas.initialize();
 }
