@@ -78,6 +78,7 @@ public:
     void beginPath();
     void moveTo(float, float);
     void lineTo(float, float);
+    void rect(float, float, float, float);
     void stroke();
     void fill();
     void closePath();

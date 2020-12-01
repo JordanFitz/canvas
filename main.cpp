@@ -77,16 +77,16 @@ void update(Canvas::Canvas& canvas)
 void render(Canvas::Canvas& canvas)
 {
     canvas.clearRect();
-
     canvas.fillStyle(gradient);
+    
     canvas.beginPath();
-    canvas.moveTo(50, 50);
-    canvas.lineTo(150, 50);
-    canvas.lineTo(150, 150);
-    canvas.lineTo(50, 150);
-    canvas.lineTo(100, 100);
-    canvas.closePath();
-    canvas.fill();
+    canvas.moveTo(20, 20);
+    canvas.lineTo(50, 50);
+    canvas.lineTo(100, 75);
+    canvas.rect(110, 85, 50, 50);
+    canvas.lineTo(150, 20);
+    canvas.lineWidth(3);
+    canvas.stroke();
 
     /*size_t i = 0;
     for (auto& it : points)

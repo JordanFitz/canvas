@@ -5,6 +5,7 @@
 #include <sstream>
 
 namespace Canvas {
+namespace Util {
 static inline void ltrim(std::string& s) {
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
         return !std::isspace(ch);
@@ -45,6 +46,7 @@ void printLine(sf::VertexArray v)
         printf("ctx.fillRect(%.2f,%.2f,10,10);\n", v[i].position.x, v[i].position.y);
     }
     printf("}\n");
+}
 }
 }
 

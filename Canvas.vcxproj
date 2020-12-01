@@ -157,7 +157,7 @@
     <ClInclude Include="Image.hpp" />
     <ClInclude Include="Path.hpp" />
     <ClInclude Include="TextMetrics.hpp" />
-    <ClInclude Include="util.hpp" />
+    <ClInclude Include="Util.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

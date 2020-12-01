@@ -17,7 +17,7 @@ sf::Color Canvas::parseColor(std::string style)
 {
     auto result = sf::Color::Black;
 
-    trim(style);
+    Util::trim(style);
 
     if (style.length() == 0)
     {
@@ -212,7 +212,7 @@ sf::Color Canvas::parseColor(std::string style)
         size_t startPosition = style.rfind("rgba", 0) == 0 ? 4 : 3;
 
         style = style.substr(startPosition, style.size());
-        trim(style);
+        Util::trim(style);
 
         if (style[0] == '(' && style[style.size() - 1] == ')')
         {
@@ -237,7 +237,7 @@ sf::Color Canvas::parseColor(std::string style)
                 }
                 else
                 {
-                    trim(part);
+                    Util::trim(part);
 
                     if (i == 3)
                     {
@@ -256,7 +256,7 @@ sf::Color Canvas::parseColor(std::string style)
 
             if (part.size() > 0)
             {
-                trim(part);
+                Util::trim(part);
 
                 if (i == 3)
                 {
@@ -284,7 +284,7 @@ sf::Color Canvas::parseColor(std::string style)
     }
 
     printf("Cached color string %s as ", originalStyle.c_str());
-    printColor(result, "\n");
+    Util::printColor(result, "\n");
 
     m_colorCache.insert(
         std::pair<std::string, sf::Color>(originalStyle, result)
@@ -295,7 +295,7 @@ sf::Color Canvas::parseColor(std::string style)
 
 sf::Text* Canvas::_parseFontString(std::string& fontString)
 {
-    trim(fontString);
+    Util::trim(fontString);
 
     if (m_texts.find(fontString) != m_texts.end())
     {
@@ -320,7 +320,7 @@ sf::Text* Canvas::_parseFontString(std::string& fontString)
 
         if (c == ' ')
         {
-            trim(part);
+            Util::trim(part);
             if (part.length() > 0)
             {
                 parts.push_back(part);
@@ -335,7 +335,7 @@ sf::Text* Canvas::_parseFontString(std::string& fontString)
 
     if (part.length() > 0)
     {
-        trim(part);
+        Util::trim(part);
         if (part.length() > 0)
         {
             parts.push_back(part);
@@ -925,6 +925,15 @@ void Canvas::arc(float x, float y, float radius, float startAngle, float endAngl
 
     CURRENT_PATH->reset();
     CURRENT_PATH->arc(x, y, radius, startAngle, endAngle, anticlockwise);
+}
+
+void Canvas::rect(float x, float y, float width, float height)
+{
+    moveTo(x, y);
+    lineTo(x + width, y);
+    lineTo(x + width, y + height);
+    lineTo(x, y + height);
+    lineTo(x, y);
 }
 
 CanvasGradient Canvas::createLinearGradient(float x1, float y1, float x2, float y2)
