@@ -29,6 +29,9 @@ public:
     void hookUpdate(void (*proc)(Canvas&));
     void hookRender(void (*proc)(Canvas&));
 
+    void backgroundColor(const std::string&);
+    const std::string& backgroundColor() const;
+
     sf::RenderWindow* window() const;
 
 private:
@@ -42,6 +45,8 @@ private:
 
     void (*m_render)(Canvas&);
     void (*m_update)(Canvas&);
+
+    std::string m_backgroundColor;
 };
 }
 

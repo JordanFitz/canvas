@@ -51,9 +51,6 @@ public:
     void lineCap(const std::string&);
     const std::string& lineCap() const;
 
-    void backgroundColor(const std::string&);
-    const std::string& backgroundColor() const;
-
     void clearRect();
     void clearRect(float, float, float, float);
 
@@ -94,7 +91,7 @@ private:
     std::map<std::string, sf::Font*> m_fonts;
     std::map<std::string, sf::Text*> m_texts;
 
-    std::string m_fillStyleString, m_strokeStyle, m_backgroundColor;
+    std::string m_fillStyleString, m_strokeStyle;
     sf::Color m_strokeColor;
 
     std::string m_lineJoinString, m_lineCapString;

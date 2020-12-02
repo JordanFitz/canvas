@@ -14,7 +14,8 @@ Canvas::Canvas() :
     m_height(150),
     m_update(nullptr),
     m_render(nullptr),
-    m_context(this)
+    m_context(this),
+    m_backgroundColor("white")
 {
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
@@ -23,8 +24,6 @@ Canvas::Canvas() :
         sf::VideoMode(m_width, m_height),
         "Canvas", sf::Style::Close, settings
     );
-
-    printf("con\n");
 }
 
 Canvas::~Canvas()
@@ -34,7 +33,6 @@ Canvas::~Canvas()
 
 int Canvas::initialize()
 {
-    printf("init\n");
     while (m_window->isOpen())
     {
         sf::Event event;
@@ -175,5 +173,15 @@ void Canvas::dispatchEvent(const std::string& type, const sf::Event& event)
         auto handler = *it;
         handler(event);
     }
+}
+
+void Canvas::backgroundColor(const std::string& style)
+{
+    m_backgroundColor = style;
+}
+
+const std::string& Canvas::backgroundColor() const
+{
+    return m_backgroundColor;
 }
 }

@@ -447,7 +447,6 @@ sf::Text* Context::_parseFontString(std::string& fontString)
 Context::Context(Canvas* canvas) :
     m_canvas(canvas),
     m_lineWidth(1.0f),
-    m_backgroundColor("white"),
     m_lineJoinString("miter"),
     m_lineJoin(LineJoin::Miter),
     m_lineCapString("butt"),
@@ -462,8 +461,6 @@ Context::Context(Canvas* canvas) :
 
 Context::~Context()
 {
-    printf("dest\n");
-
     delete m_rectangle;
 
     for (auto it = m_fonts.begin(); it != m_fonts.end(); it++)
@@ -509,7 +506,6 @@ void Context::fillStyle(const std::string& newStyle)
     m_fillStyleString = newStyle;
     m_fillStyle.type = FillStyle::Type::Color;
     m_fillStyle.color = parseColor(newStyle);
-    //m_fillColor = parseColor(m_fillStyle);
 }
 
 void Context::fillStyle(const CanvasGradient& gradient)
@@ -569,7 +565,7 @@ void Context::strokeRect(float x, float y, float width, float height)
 
 void Context::clearRect()
 {
-    auto color = parseColor(m_backgroundColor);
+    auto color = parseColor(m_canvas->backgroundColor());
     m_canvas->window()->clear(color);
 }
 
@@ -577,7 +573,7 @@ void Context::clearRect(float x, float y, float width, float height)
 {
     auto fs = fillStyle();
 
-    fillStyle(m_backgroundColor.c_str());
+    fillStyle(m_canvas->backgroundColor());
     fillRect(x, y, width, height);
     fillStyle(fs);
 }
@@ -720,15 +716,7 @@ void Context::fill()
     }
 }
 
-void Context::backgroundColor(const std::string& style)
-{
-    m_backgroundColor = style;
-}
 
-const std::string& Context::backgroundColor() const
-{
-    return m_backgroundColor;
-}
 
 void Context::lineJoin(const std::string& join)
 {
