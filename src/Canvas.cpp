@@ -4,6 +4,7 @@
 
 #include "CanvasGradient.hpp"
 #include "Context.hpp"
+#include "Event.hpp"
 
 #include "Canvas.hpp"
 
@@ -24,6 +25,9 @@ Canvas::Canvas() :
         sf::VideoMode(m_width, m_height),
         "Canvas", sf::Style::Close, settings
     );
+
+    m_window->setFramerateLimit(60);
+    m_window->setVerticalSyncEnabled(true);
 }
 
 Canvas::~Canvas()
@@ -35,6 +39,12 @@ int Canvas::initialize()
 {
     while (m_window->isOpen())
     {
+        sf::Event::KeyEvent keyPressedEvent;
+        sf::Event::TextEvent textEnteredEvent;
+
+        bool keyPressed = false;
+        bool textEntered = false;
+
         sf::Event event;
         while (m_window->pollEvent(event))
         {
@@ -52,42 +62,68 @@ int Canvas::initialize()
                 m_window->setView(sf::View(visibleArea));
 
                 CanvasGradient::setHeight(static_cast<float>(event.size.height));
+
+                sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+                m_window->setPosition(sf::Vector2i(
+                    desktop.width / 2 - m_window->getSize().x / 2,
+                    desktop.height / 2 - m_window->getSize().y / 2
+               ));
             }
 
             switch (event.type)
             {
             case sf::Event::Closed:
-                dispatchEvent("unload", event);
+                dispatchEvent("unload", Event());
                 break;
             case sf::Event::Resized:
-                dispatchEvent("resize", event);
+                dispatchEvent("resize", Event());
+                break;
+            case sf::Event::TextEntered:
+                textEntered = true;
+                textEnteredEvent = event.text;
                 break;
             case sf::Event::KeyPressed:
-                dispatchEvent("keypress", event);
+                keyPressed = true;
+                keyPressedEvent = event.key;
                 break;
             case sf::Event::KeyReleased:
-                dispatchEvent("keyup", event);
+                //dispatchEvent("keyup", event);
                 break;
             case sf::Event::MouseButtonPressed:
-                dispatchEvent("mousedown", event);
+                dispatchEvent("mousedown", MouseEvent(event.mouseButton));
                 break;
             case sf::Event::MouseButtonReleased:
-                dispatchEvent("mouseup", event);
+                dispatchEvent("mouseup", MouseEvent(event.mouseButton));
                 break;
             case sf::Event::MouseMoved:
-                dispatchEvent("mousemove", event);
+                dispatchEvent("mousemove", MouseEvent(event.mouseMove));
                 break;
             case sf::Event::MouseWheelScrolled:
-                dispatchEvent("wheel", event);
+                dispatchEvent("wheel", WheelEvent(event.mouseWheelScroll));
                 break;
             case sf::Event::GainedFocus:
-                dispatchEvent("focus", event);
+                dispatchEvent("focus", Event());
                 break;
             case sf::Event::LostFocus:
-                dispatchEvent("blur", event);
+                dispatchEvent("blur", Event());
                 break;
             }
         }
+
+        if (keyPressed && textEntered)
+        {
+            dispatchEvent("keydown", KeyboardEvent(keyPressedEvent, textEnteredEvent));
+        }
+        else if(keyPressed)
+        {
+            dispatchEvent("keydown", KeyboardEvent(keyPressedEvent));
+        }
+        else if(textEntered)
+        {
+            printf("ERROR: Got a TextEntered event ('%c') but not a KeyPressed event!\n", textEnteredEvent.unicode);
+        }
+
+        // TODO: Handle keyup!
 
         if (m_update != nullptr) m_update(*this);
         if (m_render != nullptr) m_render(*this);
@@ -147,20 +183,20 @@ void Canvas::hookRender(void (*proc)(Canvas&))
     m_render = proc;
 }
 
-void Canvas::addEventListener(const std::string& type, void (*handler)(const sf::Event&))
+void Canvas::addEventListener(const std::string& type, void (*handler)(const Event&))
 {
     if (m_handlers.find(type) == m_handlers.end())
     {
         m_handlers.insert(
-            std::pair<std::string, std::vector<void (*)(const sf::Event&)>>
-            (type, std::vector<void (*)(const sf::Event&)>())
+            std::pair<std::string, std::vector<void (*)(const Event&)>>
+            (type, std::vector<void (*)(const Event&)>())
         );
     }
 
     m_handlers.at(type).push_back(handler);
 }
 
-void Canvas::dispatchEvent(const std::string& type, const sf::Event& event)
+void Canvas::dispatchEvent(const std::string& type, const Event& event)
 {
     if (m_handlers.find(type) == m_handlers.end())
     {

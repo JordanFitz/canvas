@@ -2,13 +2,13 @@
 #define _CANVAS_CONTEXT_HPP
 
 #include <SFML/Graphics.hpp>
+#include "CanvasGradient.hpp"
 
 namespace Canvas
 {
 class Canvas;
 class Image;
 class Path;
-class CanvasGradient;
 struct TextMetrics;
 enum class LineJoin;
 enum class LineCap;
@@ -80,7 +80,7 @@ public:
     TextMetrics measureText(const std::string&);
     CanvasGradient createLinearGradient(float, float, float, float);
 
-    sf::Color parseColor(std::string);
+    sf::Color _parseColor(std::string);
 
 private:
     Canvas* m_canvas;

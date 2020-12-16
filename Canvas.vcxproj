@@ -89,11 +89,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>W:\dev\canvas\Canvas\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>W:\dev\canvas\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>W:\dev\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -144,22 +145,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Canvas.cpp" />
-    <ClCompile Include="Context.cpp" />
-    <ClCompile Include="CanvasGradient.cpp" />
-    <ClCompile Include="Image.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Path.cpp" />
+    <ClCompile Include="src\Canvas.cpp" />
+    <ClCompile Include="src\Context.cpp" />
+    <ClCompile Include="src\CanvasGradient.cpp" />
+    <ClCompile Include="src\Event.cpp" />
+    <ClCompile Include="src\Image.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Path.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Canvas.hpp" />
-    <ClInclude Include="Context.hpp" />
-    <ClInclude Include="CanvasGradient.hpp" />
-    <ClInclude Include="earcut.hpp" />
-    <ClInclude Include="Image.hpp" />
-    <ClInclude Include="Path.hpp" />
-    <ClInclude Include="TextMetrics.hpp" />
-    <ClInclude Include="Util.hpp" />
+    <ClInclude Include="include\Canvas.hpp" />
+    <ClInclude Include="include\Context.hpp" />
+    <ClInclude Include="include\CanvasGradient.hpp" />
+    <ClInclude Include="include\earcut.hpp" />
+    <ClInclude Include="include\Event.hpp" />
+    <ClInclude Include="include\Image.hpp" />
+    <ClInclude Include="include\Path.hpp" />
+    <ClInclude Include="include\TextMetrics.hpp" />
+    <ClInclude Include="include\Util.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

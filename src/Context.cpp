@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+
 #include <cctype>
 #include <map>
 #include <string>
@@ -5,7 +7,6 @@
 #include "Image.hpp"
 #include "Path.hpp"
 #include "TextMetrics.hpp"
-#include "CanvasGradient.hpp"
 #include "Util.hpp"
 #include "Canvas.hpp"
 
@@ -14,7 +15,7 @@
 #define CURRENT_PATH m_paths.at(m_pathCount - 1)
 
 namespace Canvas {
-sf::Color Context::parseColor(std::string style)
+sf::Color Context::_parseColor(std::string style)
 {
     auto result = sf::Color::Black;
 
@@ -505,7 +506,7 @@ void Context::fillStyle(const std::string& newStyle)
 {
     m_fillStyleString = newStyle;
     m_fillStyle.type = FillStyle::Type::Color;
-    m_fillStyle.color = parseColor(newStyle);
+    m_fillStyle.color = _parseColor(newStyle);
 }
 
 void Context::fillStyle(const CanvasGradient& gradient)
@@ -522,7 +523,7 @@ const std::string& Context::strokeStyle() const
 void Context::strokeStyle(const std::string& newStyle)
 {
     m_strokeStyle = newStyle;
-    m_strokeColor = parseColor(m_strokeStyle);
+    m_strokeColor = _parseColor(m_strokeStyle);
 }
 
 void Context::lineWidth(float newWidth)
@@ -565,7 +566,7 @@ void Context::strokeRect(float x, float y, float width, float height)
 
 void Context::clearRect()
 {
-    auto color = parseColor(m_canvas->backgroundColor());
+    auto color = _parseColor(m_canvas->backgroundColor());
     m_canvas->window()->clear(color);
 }
 

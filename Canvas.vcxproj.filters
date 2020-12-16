@@ -15,48 +15,54 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="src\Canvas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Image.cpp">
+    <ClCompile Include="src\CanvasGradient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Path.cpp">
+    <ClCompile Include="src\Context.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CanvasGradient.cpp">
+    <ClCompile Include="src\Image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Context.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Canvas.cpp">
+    <ClCompile Include="src\Path.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Event.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Image.hpp">
+    <ClInclude Include="include\Canvas.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TextMetrics.hpp">
+    <ClInclude Include="include\CanvasGradient.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Path.hpp">
+    <ClInclude Include="include\Context.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="earcut.hpp">
+    <ClInclude Include="include\earcut.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CanvasGradient.hpp">
+    <ClInclude Include="include\Image.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Util.hpp">
+    <ClInclude Include="include\Path.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Context.hpp">
+    <ClInclude Include="include\TextMetrics.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Canvas.hpp">
+    <ClInclude Include="include\Util.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Event.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -44,6 +44,6 @@ CanvasGradient::~CanvasGradient()
 void CanvasGradient::addColorStop(const float& offset, const std::string& color)
 {
     m_offsets.push_back(offset);
-    m_colors.push_back(m_canvas->parseColor(color));
+    m_colors.push_back(m_canvas->_parseColor(color));
 }
 }

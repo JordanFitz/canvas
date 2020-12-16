@@ -2,10 +2,12 @@
 #define _CANVAS_CANVAS_HPP
 
 #include "Context.hpp"
+#include "Event.hpp"
 
 namespace Canvas
 {
 class Context;
+class Event;
 
 class Canvas
 {
@@ -22,8 +24,8 @@ public:
     void height(unsigned int);
     unsigned int height() const;
 
-    void addEventListener(const std::string&, void (*proc)(const sf::Event&));
-    void dispatchEvent(const std::string&, const sf::Event&);
+    void addEventListener(const std::string&, void (*proc)(const Event&));
+    void dispatchEvent(const std::string&, const Event&);
 
     int initialize();
     void hookUpdate(void (*proc)(Canvas&));
@@ -41,7 +43,7 @@ private:
 
     Context m_context;
 
-    std::map<std::string, std::vector<void(*)(const sf::Event&)>> m_handlers;
+    std::map<std::string, std::vector<void(*)(const Event&)>> m_handlers;
 
     void (*m_render)(Canvas&);
     void (*m_update)(Canvas&);
