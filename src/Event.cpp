@@ -19,14 +19,14 @@ Event::Event() {}
 Event::~Event()
 {}
 
-KeyboardEvent::KeyboardEvent(const sf::Event::KeyEvent& rawEvent) :
-    m_altKey(rawEvent.alt),
-    m_shiftKey(rawEvent.shift),
-    m_ctrlKey(rawEvent.control),
-    m_metaKey(rawEvent.system),
+KeyboardEvent::KeyboardEvent(const sf::Event::KeyEvent& keyEvent) :
+    m_altKey(keyEvent.alt),
+    m_shiftKey(keyEvent.shift),
+    m_ctrlKey(keyEvent.control),
+    m_metaKey(keyEvent.system),
     m_key("Unidentified")
 {
-    switch (rawEvent.code)
+    switch (keyEvent.code)
     {
     case sfK::RShift:
     case sfK::LShift: m_key = "Shift"; break;
@@ -72,8 +72,10 @@ KeyboardEvent::KeyboardEvent(const sf::Event::KeyEvent& rawEvent) :
 
     case sfK::Unknown: break;
 
-    default: printf("Unidentified key code: %d\n", rawEvent.code); break;
+    default: printf("Unidentified key code: %d\n", keyEvent.code); break;
     }
+
+    _setCode(keyEvent.code);
 }
 
 KeyboardEvent::KeyboardEvent(const sf::Event::KeyEvent& keyEvent, const sf::Event::TextEvent& textEvent) :
@@ -92,6 +94,8 @@ KeyboardEvent::KeyboardEvent(const sf::Event::KeyEvent& keyEvent, const sf::Even
 
     default: break;
     }
+
+    _setCode(keyEvent.code);
 }
 
 KeyboardEvent::~KeyboardEvent()
@@ -103,6 +107,138 @@ bool KeyboardEvent::shiftKey() const { return m_shiftKey; }
 bool KeyboardEvent::metaKey() const { return m_metaKey; }
 
 std::string KeyboardEvent::key() const { return m_key; }
+std::string KeyboardEvent::code() const { return m_code; }
+
+bool KeyboardEvent::getModifierState(const std::string& keyArg) const
+{
+    if (keyArg == "Alt")
+        return m_altKey;
+
+    if (keyArg == "Control")
+        return m_ctrlKey;
+
+    if (keyArg == "Shift")
+        return m_shiftKey;
+
+    if (keyArg == "Meta")
+        return m_metaKey;
+
+    return false;
+}
+
+void KeyboardEvent::_setCode(sf::Keyboard::Key code)
+{
+    switch (code)
+    {
+    case sfK::A: m_code = "KeyA"; break;
+    case sfK::B: m_code = "KeyB"; break;
+    case sfK::C: m_code = "KeyC"; break;
+    case sfK::D: m_code = "KeyD"; break;
+    case sfK::E: m_code = "KeyE"; break;
+    case sfK::F: m_code = "KeyF"; break;
+    case sfK::G: m_code = "KeyG"; break;
+    case sfK::H: m_code = "KeyH"; break;
+    case sfK::I: m_code = "KeyI"; break;
+    case sfK::J: m_code = "KeyJ"; break;
+    case sfK::K: m_code = "KeyK"; break;
+    case sfK::L: m_code = "KeyL"; break;
+    case sfK::M: m_code = "KeyM"; break;
+    case sfK::N: m_code = "KeyN"; break;
+    case sfK::O: m_code = "KeyO"; break;
+    case sfK::P: m_code = "KeyP"; break;
+    case sfK::Q: m_code = "KeyQ"; break;
+    case sfK::R: m_code = "KeyR"; break;
+    case sfK::S: m_code = "KeyS"; break;
+    case sfK::T: m_code = "KeyT"; break;
+    case sfK::U: m_code = "KeyU"; break;
+    case sfK::V: m_code = "KeyV"; break;
+    case sfK::W: m_code = "KeyW"; break;
+    case sfK::X: m_code = "KeyX"; break;
+    case sfK::Y: m_code = "KeyY"; break;
+    case sfK::Z: m_code = "KeyZ"; break;
+
+    case sfK::Num0: m_code = "Digit0"; break;
+    case sfK::Num1: m_code = "Digit1"; break;
+    case sfK::Num2: m_code = "Digit2"; break;
+    case sfK::Num3: m_code = "Digit3"; break;
+    case sfK::Num4: m_code = "Digit4"; break;
+    case sfK::Num5: m_code = "Digit5"; break;
+    case sfK::Num6: m_code = "Digit6"; break;
+    case sfK::Num7: m_code = "Digit7"; break;
+    case sfK::Num8: m_code = "Digit8"; break;
+    case sfK::Num9: m_code = "Digit9"; break;
+
+    case sfK::F1: m_code = "F1"; break;
+    case sfK::F2: m_code = "F2"; break;
+    case sfK::F3: m_code = "F3"; break;
+    case sfK::F4: m_code = "F4"; break;
+    case sfK::F5: m_code = "F5"; break;
+    case sfK::F6: m_code = "F6"; break;
+    case sfK::F7: m_code = "F7"; break;
+    case sfK::F8: m_code = "F8"; break;
+    case sfK::F9: m_code = "F9"; break;
+    case sfK::F10: m_code = "F10"; break;
+    case sfK::F11: m_code = "F11"; break;
+    case sfK::F12: m_code = "F12"; break;
+    case sfK::F13: m_code = "F13"; break;
+    case sfK::F14: m_code = "F14"; break;
+    case sfK::F15: m_code = "F15"; break;
+
+    case sfK::Escape: m_code = "Escape"; break;
+    case sfK::LShift: m_code = "ShiftLeft"; break;
+    case sfK::RShift: m_code = "ShiftRight"; break;
+    case sfK::LControl: m_code = "ControlLeft"; break;
+    case sfK::RControl: m_code = "ControlRight"; break;
+    case sfK::LAlt: m_code = "AltLeft"; break;
+    case sfK::RAlt: m_code = "AltRight"; break;
+    case sfK::LSystem: m_code = "MetaLeft"; break;
+    case sfK::RSystem: m_code = "MetaRight"; break;
+    case sfK::Menu: m_code = "ContextMenu"; break;
+    case sfK::LBracket: m_code = "BracketLeft"; break;
+    case sfK::RBracket: m_code = "BracketRight"; break;
+    case sfK::Semicolon: m_code = "Semicolon"; break;
+    case sfK::Comma: m_code = "Comma"; break;
+    case sfK::Period: m_code = "Period"; break;
+    case sfK::Quote: m_code = "Quote"; break;
+    case sfK::Slash: m_code = "Slash"; break;
+    case sfK::Backslash: m_code = "Backslash"; break;
+    case sfK::Tilde: m_code = "Backquote"; break;
+    case sfK::Equal: m_code = "Equal"; break;
+    case sfK::Hyphen: m_code = "Minus"; break;
+    case sfK::Space: m_code = "Space"; break;
+    case sfK::Enter: m_code = "Enter"; break;
+    case sfK::Backspace: m_code = "Backspace"; break;
+    case sfK::Tab: m_code = "Tab"; break;
+    case sfK::PageUp: m_code = "PageUp"; break;
+    case sfK::PageDown: m_code = "PageDown"; break;
+    case sfK::End: m_code = "End"; break;
+    case sfK::Home: m_code = "Home"; break;
+    case sfK::Insert: m_code = "Insert"; break;
+    case sfK::Delete: m_code = "Delete"; break;
+    case sfK::Add: m_code = "NumpadAdd"; break;
+    case sfK::Subtract: m_code = "NumpadSubtract"; break;
+    case sfK::Multiply: m_code = "NumpadMultiply"; break;
+    case sfK::Divide: m_code = "NumpadDivide"; break;
+    case sfK::Left: m_code = "ArrowLeft"; break;
+    case sfK::Right: m_code = "ArrowRight"; break;
+    case sfK::Up: m_code = "ArrowUp"; break;
+    case sfK::Down: m_code = "ArrowDown"; break;
+    case sfK::Pause: m_code = "Pause"; break;
+
+    case sfK::Numpad0: m_code = "Numpad0"; break;
+    case sfK::Numpad1: m_code = "Numpad1"; break;
+    case sfK::Numpad2: m_code = "Numpad2"; break;
+    case sfK::Numpad3: m_code = "Numpad3"; break;
+    case sfK::Numpad4: m_code = "Numpad4"; break;
+    case sfK::Numpad5: m_code = "Numpad5"; break;
+    case sfK::Numpad6: m_code = "Numpad6"; break;
+    case sfK::Numpad7: m_code = "Numpad7"; break;
+    case sfK::Numpad8: m_code = "Numpad8"; break;
+    case sfK::Numpad9: m_code = "Numpad9"; break;
+
+    default: m_code = "Unidentified";
+    }
+}
 
 uint8_t MouseEvent::_getButton(sfM button)
 {

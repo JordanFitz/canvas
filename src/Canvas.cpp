@@ -76,19 +76,21 @@ int Canvas::initialize()
             switch (event.type)
             {
             case sf::Event::Closed:
-                dispatchEvent("unload", Event());
-                break;
+                dispatchEvent("unload", Event()); break;
+
             case sf::Event::Resized:
-                dispatchEvent("resize", Event());
-                break;
+                dispatchEvent("resize", Event()); break;
+
             case sf::Event::TextEntered:
                 textEntered = true;
                 textEnteredEvent = event.text;
                 break;
+
             case sf::Event::KeyPressed:
                 keyPressed = true;
                 keyPressedEvent = event.key;
                 break;
+
             case sf::Event::KeyReleased:
                 
                 // NOTE: This implementation functions differently than a DOM keyup. 
@@ -109,21 +111,24 @@ int Canvas::initialize()
             case sf::Event::MouseButtonPressed:
                 dispatchEvent("mousedown", MouseEvent(event.mouseButton));
                 break;
+
             case sf::Event::MouseButtonReleased:
                 dispatchEvent("mouseup", MouseEvent(event.mouseButton));
                 break;
+
             case sf::Event::MouseMoved:
                 dispatchEvent("mousemove", MouseEvent(event.mouseMove));
                 break;
+
             case sf::Event::MouseWheelScrolled:
                 dispatchEvent("wheel", WheelEvent(event.mouseWheelScroll));
                 break;
+
             case sf::Event::GainedFocus:
-                dispatchEvent("focus", Event());
-                break;
+                dispatchEvent("focus", Event()); break;
+
             case sf::Event::LostFocus:
-                dispatchEvent("blur", Event());
-                break;
+                dispatchEvent("blur", Event()); break;
             }
         }
 
@@ -163,7 +168,7 @@ Context& Canvas::getContext()
     return m_context;
 }
 
-sf::RenderWindow* Canvas::window() const
+sf::RenderWindow* Canvas::_sfWindow() const
 {
     return m_window;
 }

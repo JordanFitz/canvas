@@ -40,7 +40,7 @@ public:
     void backgroundColor(const std::string&);
     const std::string& backgroundColor() const;
 
-    sf::RenderWindow* window() const;
+    sf::RenderWindow* _sfWindow() const;
 
 private:
     sf::RenderWindow* m_window;

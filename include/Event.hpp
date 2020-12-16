@@ -36,12 +36,17 @@ public:
     bool shiftKey() const;
     bool metaKey() const;
 
+    bool getModifierState(const std::string&) const;
+
     std::string key() const;
+    std::string code() const;
 
 private:
     bool m_altKey, m_ctrlKey, m_shiftKey, m_metaKey;
 
-    std::string m_key;
+    std::string m_key, m_code;
+
+    void _setCode(sf::Keyboard::Key);
 };
 
 class MouseEvent : public Event

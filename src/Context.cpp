@@ -545,11 +545,11 @@ void Context::fillRect(float x, float y, float width, float height)
 
     if (m_fillStyle.type == FillStyle::Type::Color)
     {
-        m_canvas->window()->draw(*m_rectangle);
+        m_canvas->_sfWindow()->draw(*m_rectangle);
     }
     else
     {
-        m_canvas->window()->draw(*m_rectangle, CanvasGradient::getShader(m_fillStyle.gradient));
+        m_canvas->_sfWindow()->draw(*m_rectangle, CanvasGradient::getShader(m_fillStyle.gradient));
     }
 }
 
@@ -561,13 +561,13 @@ void Context::strokeRect(float x, float y, float width, float height)
     m_rectangle->setOutlineColor(m_strokeColor);
     m_rectangle->setOutlineThickness(m_lineWidth);
 
-    m_canvas->window()->draw(*m_rectangle);
+    m_canvas->_sfWindow()->draw(*m_rectangle);
 }
 
 void Context::clearRect()
 {
     auto color = _parseColor(m_canvas->backgroundColor());
-    m_canvas->window()->clear(color);
+    m_canvas->_sfWindow()->clear(color);
 }
 
 void Context::clearRect(float x, float y, float width, float height)
@@ -583,7 +583,7 @@ void Context::drawImage(const Image& image, float dx, float dy)
 {
     sf::Sprite* sprite = image.getSprite();
     sprite->setPosition(sf::Vector2f(dx, dy));
-    m_canvas->window()->draw(*sprite);
+    m_canvas->_sfWindow()->draw(*sprite);
 }
 
 void Context::drawImage(const Image& image, float dx, float dy, float dWidth, float dHeight)
@@ -595,7 +595,7 @@ void Context::drawImage(const Image& image, float dx, float dy, float dWidth, fl
     auto size = sprite->getTexture()->getSize();
     sprite->setScale(sf::Vector2f(dWidth / size.x, dHeight / size.y));
 
-    m_canvas->window()->draw(*sprite);
+    m_canvas->_sfWindow()->draw(*sprite);
 }
 
 void Context::drawImage(const Image& image, float sx, float sy, float sWidth, float sHeight, float dx, float dy, float dWidth, float dHeight)
@@ -613,7 +613,7 @@ void Context::drawImage(const Image& image, float sx, float sy, float sWidth, fl
     sprite->setPosition(sf::Vector2f(dx, dy));
     sprite->setScale(sf::Vector2f(dWidth / sWidth, dHeight / sHeight));
 
-    m_canvas->window()->draw(*sprite);
+    m_canvas->_sfWindow()->draw(*sprite);
 
     sprite->setTextureRect(rect);
 }
@@ -634,11 +634,11 @@ void Context::fillText(const std::string& string, float x, float y)
 
     if (m_fillStyle.type == FillStyle::Type::Color)
     {
-        m_canvas->window()->draw(*m_text);
+        m_canvas->_sfWindow()->draw(*m_text);
     }
     else
     {
-        m_canvas->window()->draw(*m_text, CanvasGradient::getShader(m_fillStyle.gradient));
+        m_canvas->_sfWindow()->draw(*m_text, CanvasGradient::getShader(m_fillStyle.gradient));
     }
 }
 
@@ -657,7 +657,7 @@ void Context::strokeText(const std::string& string, float x, float y)
     m_text->setPosition(sf::Vector2f(x, y));
     m_text->setString(string);
 
-    m_canvas->window()->draw(*m_text);
+    m_canvas->_sfWindow()->draw(*m_text);
 }
 
 TextMetrics Context::measureText(const std::string& string)
@@ -666,7 +666,7 @@ TextMetrics Context::measureText(const std::string& string)
     m_text->setOutlineThickness(0.0f);
     m_text->setFillColor(sf::Color::Transparent);
 
-    m_canvas->window()->draw(*m_text);
+    m_canvas->_sfWindow()->draw(*m_text);
 
     return { m_text->getLocalBounds().width };
 }
@@ -705,7 +705,7 @@ void Context::stroke()
 {
     for (size_t i = 0; i < m_pathCount; i++)
     {
-        m_paths.at(i)->stroke(m_lineWidth, m_strokeColor, m_lineJoin, m_lineCap, m_canvas->window());
+        m_paths.at(i)->stroke(m_lineWidth, m_strokeColor, m_lineJoin, m_lineCap, m_canvas->_sfWindow());
     }
 }
 
@@ -713,7 +713,7 @@ void Context::fill()
 {
     for (size_t i = 0; i < m_pathCount; i++)
     {
-        m_paths.at(i)->fill(m_fillStyle, m_canvas->window());
+        m_paths.at(i)->fill(m_fillStyle, m_canvas->_sfWindow());
     }
 }
 

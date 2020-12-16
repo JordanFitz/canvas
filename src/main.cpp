@@ -108,12 +108,12 @@ int main(int argc, char** argv)
 
     canvas.addEventListener("keydown", [](const Canvas::Event& e) {
         auto event = Canvas::eventAs<Canvas::KeyboardEvent>(e);
-        printf("d: %s\n", event.key().c_str());
+        printf("d: %s\n", event.code().c_str());
     });
 
     canvas.addEventListener("keyup", [](const Canvas::Event& e) {
         auto event = Canvas::eventAs<Canvas::KeyboardEvent>(e);
-        printf("u: %s\n", event.key().c_str());
+        printf("u: %s\n", event.code().c_str());
     });
 
     canvas.addEventListener("mousemove", [](const Canvas::Event& event) {
