@@ -1,4 +1,5 @@
 #include <string>
+#include <unordered_map>
 
 #include <SFML/Graphics.hpp>
 
@@ -37,6 +38,8 @@ Canvas::~Canvas()
 
 int Canvas::initialize()
 {
+    std::unordered_map<sf::Keyboard::Key, KeyboardEvent> keysBuffer;
+
     while (m_window->isOpen())
     {
         sf::Event::KeyEvent keyPressedEvent;
@@ -87,7 +90,21 @@ int Canvas::initialize()
                 keyPressedEvent = event.key;
                 break;
             case sf::Event::KeyReleased:
-                //dispatchEvent("keyup", event);
+                
+                // NOTE: This implementation functions differently than a DOM keyup. 
+                //       In a browser, you can press Shift+A and get something like 
+                //       'Shift' down then 'A' down, then release [shift], and get 
+                //       'Shift' up, then release [A] and get 'a' up. In this 
+                //       implementation, the keyup event will have the same modifier(s)
+                //       as the last keydown event for that key. I'm not sure how else
+                //       this could be done without implemtating craze key interpretation
+                //       algorithms to generate the correct `key` string value. 
+                if (keysBuffer.find(event.key.code) != keysBuffer.end())
+                {
+                    dispatchEvent("keyup", keysBuffer.at(event.key.code));
+                    keysBuffer.erase(event.key.code);
+                }
+
                 break;
             case sf::Event::MouseButtonPressed:
                 dispatchEvent("mousedown", MouseEvent(event.mouseButton));
@@ -112,18 +129,20 @@ int Canvas::initialize()
 
         if (keyPressed && textEntered)
         {
-            dispatchEvent("keydown", KeyboardEvent(keyPressedEvent, textEnteredEvent));
+            auto event = KeyboardEvent(keyPressedEvent, textEnteredEvent);
+            keysBuffer.insert(std::make_pair(keyPressedEvent.code, event));
+            dispatchEvent("keydown", event);
         }
         else if(keyPressed)
         {
-            dispatchEvent("keydown", KeyboardEvent(keyPressedEvent));
+            auto event = KeyboardEvent(keyPressedEvent);
+            keysBuffer.insert(std::make_pair(keyPressedEvent.code, event));
+            dispatchEvent("keydown", event);
         }
         else if(textEntered)
         {
             printf("ERROR: Got a TextEntered event ('%c') but not a KeyPressed event!\n", textEnteredEvent.unicode);
         }
-
-        // TODO: Handle keyup!
 
         if (m_update != nullptr) m_update(*this);
         if (m_render != nullptr) m_render(*this);

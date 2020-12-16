@@ -6,6 +6,12 @@
 
 namespace Canvas
 {
+template <typename T> 
+static inline const T& eventAs(const Event& event)
+{
+    return dynamic_cast<const T&>(event);
+}
+
 class Context;
 class Event;
 
@@ -53,4 +59,3 @@ private:
 }
 
 #endif
-

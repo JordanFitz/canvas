@@ -106,13 +106,19 @@ int main(int argc, char** argv)
     canvas.hookUpdate(&update);
     canvas.hookRender(&render);
 
-    canvas.addEventListener("wheel", [](const Canvas::Event& event) {
-        const auto& wheel = dynamic_cast<const Canvas::WheelEvent&>(event);
-    }); 
+    canvas.addEventListener("keydown", [](const Canvas::Event& e) {
+        auto event = Canvas::eventAs<Canvas::KeyboardEvent>(e);
+        printf("d: %s\n", event.key().c_str());
+    });
+
+    canvas.addEventListener("keyup", [](const Canvas::Event& e) {
+        auto event = Canvas::eventAs<Canvas::KeyboardEvent>(e);
+        printf("u: %s\n", event.key().c_str());
+    });
 
     canvas.addEventListener("mousemove", [](const Canvas::Event& event) {
         const auto& mouse = dynamic_cast<const Canvas::MouseEvent&>(event);
-        printf("%d, %d\n", mouse.button(), mouse.buttons());
+        /*printf("%d, %d\n", mouse.button(), mouse.buttons());
         printf("%d,%d\n", mouse.clientX(), mouse.clientY());
         printf("%d,%d\n", mouse.screenX(), mouse.screenY());
         printf(
@@ -121,7 +127,7 @@ int main(int argc, char** argv)
             mouse.ctrlKey() ? "true" : "false",
             mouse.shiftKey() ? "true" : "false",
             mouse.metaKey() ? "true" : "false"
-        );
+        );*/
     });
 
     return canvas.initialize();
