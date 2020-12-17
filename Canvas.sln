@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Canvas", "Canvas.vcxproj", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CanvasTester", "..\CanvasTester\CanvasTester.vcxproj", "{8DDBBE01-4607-4FF6-A935-D5817F1D9475}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Luau", "..\Luau\Luau.vcxproj", "{F5203810-917F-4908-A20C-D97E3B3AC885}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{8DDBBE01-4607-4FF6-A935-D5817F1D9475}.Release|x64.Build.0 = Release|x64
 		{8DDBBE01-4607-4FF6-A935-D5817F1D9475}.Release|x86.ActiveCfg = Release|Win32
 		{8DDBBE01-4607-4FF6-A935-D5817F1D9475}.Release|x86.Build.0 = Release|Win32
+		{F5203810-917F-4908-A20C-D97E3B3AC885}.Debug|x64.ActiveCfg = Debug|x64
+		{F5203810-917F-4908-A20C-D97E3B3AC885}.Debug|x64.Build.0 = Debug|x64
+		{F5203810-917F-4908-A20C-D97E3B3AC885}.Debug|x86.ActiveCfg = Debug|Win32
+		{F5203810-917F-4908-A20C-D97E3B3AC885}.Debug|x86.Build.0 = Debug|Win32
+		{F5203810-917F-4908-A20C-D97E3B3AC885}.Release|x64.ActiveCfg = Release|x64
+		{F5203810-917F-4908-A20C-D97E3B3AC885}.Release|x64.Build.0 = Release|x64
+		{F5203810-917F-4908-A20C-D97E3B3AC885}.Release|x86.ActiveCfg = Release|Win32
+		{F5203810-917F-4908-A20C-D97E3B3AC885}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,6 +1,7 @@
 #ifndef _CANVAS_CANVAS_HPP
 #define _CANVAS_CANVAS_HPP
 
+#include <functional>
 #include "Context.hpp"
 #include "Event.hpp"
 
@@ -34,8 +35,12 @@ public:
     void dispatchEvent(const std::string&, const Event&);
 
     int initialize();
-    void hookUpdate(void (*proc)(Canvas&));
-    void hookRender(void (*proc)(Canvas&));
+
+    template <typename F>
+    void hookUpdate(F&& proc) { m_render = proc; }
+
+    template <typename F>
+    void hookRender(F&& proc) { m_update = proc; }
 
     void backgroundColor(const std::string&);
     const std::string& backgroundColor() const;
@@ -51,8 +56,8 @@ private:
 
     std::map<std::string, std::vector<void(*)(const Event&)>> m_handlers;
 
-    void (*m_render)(Canvas&);
-    void (*m_update)(Canvas&);
+    std::function<void(Canvas&)> m_render;
+    std::function<void(Canvas&)> m_update;
 
     std::string m_backgroundColor;
 };

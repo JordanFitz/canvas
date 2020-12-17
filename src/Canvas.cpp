@@ -1,5 +1,6 @@
 #include <string>
 #include <unordered_map>
+#include <functional>
 
 #include <SFML/Graphics.hpp>
 
@@ -27,8 +28,8 @@ Canvas::Canvas() :
         "Canvas", sf::Style::Close, settings
     );
 
-    m_window->setFramerateLimit(60);
-    m_window->setVerticalSyncEnabled(true);
+    //m_window->setFramerateLimit(60);
+    //m_window->setVerticalSyncEnabled(true);
 }
 
 Canvas::~Canvas()
@@ -195,16 +196,6 @@ void Canvas::height(unsigned int newHeight)
 unsigned int Canvas::height() const
 {
     return m_height;
-}
-
-void Canvas::hookUpdate(void (*proc)(Canvas&))
-{
-    m_update = proc;
-}
-
-void Canvas::hookRender(void (*proc)(Canvas&))
-{
-    m_render = proc;
 }
 
 void Canvas::addEventListener(const std::string& type, void (*handler)(const Event&))
