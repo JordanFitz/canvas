@@ -33,6 +33,12 @@ public:
     void height(unsigned int);
     unsigned int height() const;
 
+    void maxFramerate(unsigned int);
+    unsigned int maxFramerate() const;
+
+    void vsync(bool);
+    bool vsync() const;
+
     // This is defined in the header because of the template?
     template <typename F>
     void addEventListener(const std::string& name, F&& proc)
@@ -50,10 +56,10 @@ public:
     int initialize();
 
     template <typename F>
-    void hookUpdate(F&& proc) { m_render = proc; }
+    void hookUpdate(F&& proc) { m_update = proc; }
 
     template <typename F>
-    void hookRender(F&& proc) { m_update = proc; }
+    void hookRender(F&& proc) { m_render = proc; }
 
     void backgroundColor(const std::string&);
     const std::string& backgroundColor() const;
@@ -65,7 +71,8 @@ public:
 private:
     sf::RenderWindow* m_window;
 
-    unsigned int m_width, m_height;
+    unsigned int m_width, m_height, m_maxFramerate;
+    bool m_useVsync;
 
     Context m_context;
 
@@ -73,7 +80,7 @@ private:
     std::map<std::string, std::vector<std::function<void(const Event&)>>> m_handlers;
 
     std::function<void(Canvas&)> m_render;
-    std::function<void(Canvas&)> m_update;
+    std::function<void(Canvas&, float)> m_update;
 
     std::string m_backgroundColor;
 };

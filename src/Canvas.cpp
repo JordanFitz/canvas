@@ -18,7 +18,9 @@ Canvas::Canvas() :
     m_update(nullptr),
     m_render(nullptr),
     m_context(this),
-    m_backgroundColor("white")
+    m_backgroundColor("white"),
+    m_maxFramerate(0),
+    m_useVsync(false)
 {
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
@@ -27,9 +29,6 @@ Canvas::Canvas() :
         sf::VideoMode(m_width, m_height),
         "Canvas", sf::Style::Close, settings
     );
-
-    //m_window->setFramerateLimit(60);
-    //m_window->setVerticalSyncEnabled(true);
 }
 
 Canvas::~Canvas()
@@ -65,6 +64,9 @@ sf::Font* Canvas::_getFont(const std::string& name)
 int Canvas::initialize()
 {
     std::unordered_map<sf::Keyboard::Key, KeyboardEvent> keysBuffer;
+
+    sf::Clock deltaClock;
+    float delta = 0.0f;
 
     while (m_window->isOpen())
     {
@@ -177,10 +179,12 @@ int Canvas::initialize()
             printf("ERROR: Got a TextEntered event ('%c') but not a KeyPressed event!\n", textEnteredEvent.unicode);
         }
 
-        if (m_update != nullptr) m_update(*this);
+        if (m_update != nullptr) m_update(*this, delta);
         if (m_render != nullptr) m_render(*this);
 
         m_window->display();
+
+        delta = deltaClock.restart().asSeconds();
     }
 
     return 0;
@@ -199,6 +203,28 @@ Context& Canvas::getContext()
 sf::RenderWindow* Canvas::_sfWindow() const
 {
     return m_window;
+}
+
+void Canvas::maxFramerate(unsigned int framerate)
+{
+    m_maxFramerate = framerate;
+    m_window->setFramerateLimit(m_maxFramerate);
+}
+
+unsigned int Canvas::maxFramerate() const
+{
+    return m_maxFramerate;
+}
+
+void Canvas::vsync(bool value)
+{
+    m_useVsync = value;
+    m_window->setVerticalSyncEnabled(m_useVsync);
+}
+
+bool Canvas::vsync() const
+{
+    return m_useVsync;
 }
 
 void Canvas::width(unsigned int newWidth)
