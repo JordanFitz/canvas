@@ -411,11 +411,12 @@ sf::Text* Context::_parseFontString(std::string& fontString)
         italic ? "true" : "false"
     );
 
-    if (m_fonts.find(family) != m_fonts.end())
+    sf::Font* font;
+    if ((font = m_canvas->_getFont(family)) != nullptr)
     {
         sf::Text* text = new sf::Text();
 
-        text->setFont(*m_fonts.at(family));
+        text->setFont(*font);
         text->setCharacterSize(size);
 
         sf::Uint32 style = 0;
@@ -464,26 +465,11 @@ Context::~Context()
 {
     delete m_rectangle;
 
-    for (auto it = m_fonts.begin(); it != m_fonts.end(); it++)
-        delete it->second;
-
     for (auto it = m_texts.begin(); it != m_texts.end(); it++)
         delete it->second;
 
     for (auto it = m_paths.begin(); it < m_paths.end(); it++)
         delete* it;
-}
-
-void Context::loadFont(const std::string& name, const std::string& path)
-{
-    if (m_fonts.find(name) != m_fonts.end())
-    {
-        printf("Replacing font '%s'\n", name.c_str());
-    }
-
-    sf::Font* font = new sf::Font();
-    font->loadFromFile(path);
-    m_fonts.insert(std::pair<std::string, sf::Font*>(name, font));
 }
 
 void Context::font(const std::string& fontString)

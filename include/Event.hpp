@@ -1,33 +1,39 @@
 #ifndef _CANVAS_EVENT_HPP
 #define _CANVAS_EVENT_HPP
 
+#include <SFML\Graphics.hpp>
+
 namespace Canvas
 {
 enum class EventType
 {
-    Unload,
-    Resize,
+    Generic,
     Keyboard,
-    MouseDown,
-    MouseUp,
-    MouseMove,
-    Wheel,
-    Focus,
-    Blur
+    Mouse,
+    Wheel
 };
 
 class Event
 {
 public:
-    Event();
+    Event(EventType, const std::string&);
     virtual ~Event();
+
+    EventType type() const;
+
+    std::string name() const;
+    void name(const std::string&);
+
+protected:
+    EventType m_type;
+    std::string m_name;
 };
 
 class KeyboardEvent : public Event
 {
 public:
-    KeyboardEvent(const sf::Event::KeyEvent&);
-    KeyboardEvent(const sf::Event::KeyEvent&, const sf::Event::TextEvent&);
+    KeyboardEvent(const std::string&, const sf::Event::KeyEvent&);
+    KeyboardEvent(const std::string&, const sf::Event::KeyEvent&, const sf::Event::TextEvent&);
 
     ~KeyboardEvent();
 
@@ -52,9 +58,9 @@ private:
 class MouseEvent : public Event
 {
 public:
-    MouseEvent();
-    MouseEvent(const sf::Event::MouseButtonEvent&);
-    MouseEvent(const sf::Event::MouseMoveEvent&);
+    MouseEvent(const std::string&);
+    MouseEvent(const std::string&, const sf::Event::MouseButtonEvent&);
+    MouseEvent(const std::string&, const sf::Event::MouseMoveEvent&);
     ~MouseEvent();
 
     uint8_t button() const;
@@ -81,7 +87,7 @@ private:
 class WheelEvent : public Event
 {
 public:
-    WheelEvent(const sf::Event::MouseWheelScrollEvent&);
+    WheelEvent(const std::string&, const sf::Event::MouseWheelScrollEvent&);
     ~WheelEvent();
 
     float deltaX() const;

@@ -35,6 +35,31 @@ Canvas::Canvas() :
 Canvas::~Canvas()
 {
     delete m_window;
+
+    for (auto it = m_fonts.begin(); it != m_fonts.end(); it++)
+        delete it->second;
+}
+
+void Canvas::loadFont(const std::string& name, const std::string& path)
+{
+    if (m_fonts.find(name) != m_fonts.end())
+    {
+        printf("Replacing font '%s'\n", name.c_str());
+    }
+
+    sf::Font* font = new sf::Font();
+    font->loadFromFile(path);
+    m_fonts.insert(std::pair<std::string, sf::Font*>(name, font));
+}
+
+sf::Font* Canvas::_getFont(const std::string& name)
+{
+    if (m_fonts.find(name) != m_fonts.end())
+    {
+        return m_fonts.at(name);
+    }
+
+    return nullptr;
 }
 
 int Canvas::initialize()
@@ -77,10 +102,10 @@ int Canvas::initialize()
             switch (event.type)
             {
             case sf::Event::Closed:
-                dispatchEvent("unload", Event()); break;
+                dispatchEvent("unload", Event(EventType::Generic, "unload")); break;
 
             case sf::Event::Resized:
-                dispatchEvent("resize", Event()); break;
+                dispatchEvent("resize", Event(EventType::Generic, "resize")); break;
 
             case sf::Event::TextEntered:
                 textEntered = true;
@@ -104,44 +129,46 @@ int Canvas::initialize()
                 //       algorithms to generate the correct `key` string value. 
                 if (keysBuffer.find(event.key.code) != keysBuffer.end())
                 {
-                    dispatchEvent("keyup", keysBuffer.at(event.key.code));
+                    auto& keyboardEvent = keysBuffer.at(event.key.code);
+                    keyboardEvent.name("keyup");
+                    dispatchEvent("keyup", keyboardEvent);
                     keysBuffer.erase(event.key.code);
                 }
 
                 break;
             case sf::Event::MouseButtonPressed:
-                dispatchEvent("mousedown", MouseEvent(event.mouseButton));
+                dispatchEvent("mousedown", MouseEvent("mousedown", event.mouseButton));
                 break;
 
             case sf::Event::MouseButtonReleased:
-                dispatchEvent("mouseup", MouseEvent(event.mouseButton));
+                dispatchEvent("mouseup", MouseEvent("mouseup", event.mouseButton));
                 break;
 
             case sf::Event::MouseMoved:
-                dispatchEvent("mousemove", MouseEvent(event.mouseMove));
+                dispatchEvent("mousemove", MouseEvent("mousemove", event.mouseMove));
                 break;
 
             case sf::Event::MouseWheelScrolled:
-                dispatchEvent("wheel", WheelEvent(event.mouseWheelScroll));
+                dispatchEvent("wheel", WheelEvent("wheel", event.mouseWheelScroll));
                 break;
 
             case sf::Event::GainedFocus:
-                dispatchEvent("focus", Event()); break;
+                dispatchEvent("focus", Event(EventType::Generic, "focus")); break;
 
             case sf::Event::LostFocus:
-                dispatchEvent("blur", Event()); break;
+                dispatchEvent("blur", Event(EventType::Generic, "blur")); break;
             }
         }
 
         if (keyPressed && textEntered)
         {
-            auto event = KeyboardEvent(keyPressedEvent, textEnteredEvent);
+            auto event = KeyboardEvent("keydown", keyPressedEvent, textEnteredEvent);
             keysBuffer.insert(std::make_pair(keyPressedEvent.code, event));
             dispatchEvent("keydown", event);
         }
         else if(keyPressed)
         {
-            auto event = KeyboardEvent(keyPressedEvent);
+            auto event = KeyboardEvent("keydown", keyPressedEvent);
             keysBuffer.insert(std::make_pair(keyPressedEvent.code, event));
             dispatchEvent("keydown", event);
         }
@@ -198,18 +225,8 @@ unsigned int Canvas::height() const
     return m_height;
 }
 
-void Canvas::addEventListener(const std::string& type, void (*handler)(const Event&))
-{
-    if (m_handlers.find(type) == m_handlers.end())
-    {
-        m_handlers.insert(
-            std::pair<std::string, std::vector<void (*)(const Event&)>>
-            (type, std::vector<void (*)(const Event&)>())
-        );
-    }
+//void Canvas::addEventListener(const std::string& type, void (*handler)(const Event&))
 
-    m_handlers.at(type).push_back(handler);
-}
 
 void Canvas::dispatchEvent(const std::string& type, const Event& event)
 {

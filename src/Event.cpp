@@ -7,10 +7,8 @@
 
 namespace Canvas
 {
-Event::Event() {}
-
-//Event::Event(EventType type) : m_type(type)
-//{}
+Event::Event(EventType type, const std::string& name) : m_type(type), m_name(name)
+{}
 
 //Event::Event(const sf::Event& rawEvent, EventType type)
 //    : m_rawEvent(rawEvent), m_type(type)
@@ -19,7 +17,23 @@ Event::Event() {}
 Event::~Event()
 {}
 
-KeyboardEvent::KeyboardEvent(const sf::Event::KeyEvent& keyEvent) :
+EventType Event::type() const
+{
+    return m_type;
+}
+
+std::string Event::name() const
+{
+    return m_name;
+}
+
+void Event::name(const std::string& value)
+{
+    m_name = value;
+}
+
+KeyboardEvent::KeyboardEvent(const std::string& name, const sf::Event::KeyEvent& keyEvent) :
+    Event(EventType::Keyboard, name),
     m_altKey(keyEvent.alt),
     m_shiftKey(keyEvent.shift),
     m_ctrlKey(keyEvent.control),
@@ -72,13 +86,14 @@ KeyboardEvent::KeyboardEvent(const sf::Event::KeyEvent& keyEvent) :
 
     case sfK::Unknown: break;
 
-    default: printf("Unidentified key code: %d\n", keyEvent.code); break;
+    //default: printf("Unidentified key code: %d\n", keyEvent.code); break;
     }
 
     _setCode(keyEvent.code);
 }
 
-KeyboardEvent::KeyboardEvent(const sf::Event::KeyEvent& keyEvent, const sf::Event::TextEvent& textEvent) :
+KeyboardEvent::KeyboardEvent(const std::string& name, const sf::Event::KeyEvent& keyEvent, const sf::Event::TextEvent& textEvent) :
+    Event(EventType::Keyboard, name),
     m_altKey(keyEvent.alt),
     m_shiftKey(keyEvent.shift),
     m_ctrlKey(keyEvent.control),
@@ -254,7 +269,12 @@ uint8_t MouseEvent::_getButton(sfM button)
     return 0;
 }
 
-MouseEvent::MouseEvent() : m_buttons(0), m_button(0)
+MouseEvent::MouseEvent(const std::string& name) :
+    Event(EventType::Mouse, name),
+    m_buttons(0),
+    m_button(0),
+    m_clientX(0),
+    m_clientY(0)
 {
     m_altKey =
         sfK::isKeyPressed(sfK::LAlt) ||
@@ -284,16 +304,16 @@ MouseEvent::MouseEvent() : m_buttons(0), m_button(0)
     m_screenY = screenPosition.y;
 }
 
-MouseEvent::MouseEvent(const sf::Event::MouseButtonEvent& rawEvent):
-    MouseEvent()
+MouseEvent::MouseEvent(const std::string& name, const sf::Event::MouseButtonEvent& rawEvent):
+    MouseEvent(name)
 {
     m_button = _getButton(rawEvent.button);
     m_clientX = rawEvent.x;
     m_clientY = rawEvent.y;
 }
 
-MouseEvent::MouseEvent(const sf::Event::MouseMoveEvent& rawEvent) :
-    MouseEvent()
+MouseEvent::MouseEvent(const std::string& name, const sf::Event::MouseMoveEvent& rawEvent) :
+    MouseEvent(name)
 {
     m_clientX = rawEvent.x;
     m_clientY = rawEvent.y;
@@ -314,7 +334,7 @@ bool MouseEvent::ctrlKey() const { return m_ctrlKey; }
 bool MouseEvent::shiftKey() const { return m_shiftKey; }
 bool MouseEvent::metaKey() const { return m_metaKey; }
 
-WheelEvent::WheelEvent(const sf::Event::MouseWheelScrollEvent& rawEvent)
+WheelEvent::WheelEvent(const std::string& name, const sf::Event::MouseWheelScrollEvent& rawEvent) : Event(EventType::Wheel, name)
 {
     if (rawEvent.wheel == sf::Mouse::HorizontalWheel)
     {

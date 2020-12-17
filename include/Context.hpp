@@ -32,8 +32,6 @@ public:
     Context(Canvas*);
     ~Context();
 
-    void loadFont(const std::string&, const std::string&);
-
     void fillStyle(const CanvasGradient&);
 
     void fillStyle(const std::string&);
@@ -88,7 +86,6 @@ private:
     sf::RectangleShape* m_rectangle;
 
     std::map<std::string, sf::Color> m_colorCache;
-    std::map<std::string, sf::Font*> m_fonts;
     std::map<std::string, sf::Text*> m_texts;
 
     std::string m_fillStyleString, m_strokeStyle;

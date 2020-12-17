@@ -25,13 +25,26 @@ public:
     Context& getContext(const std::string&);
     Context& getContext();
 
+    void loadFont(const std::string&, const std::string&);
+
     void width(unsigned int);
     unsigned int width() const;
 
     void height(unsigned int);
     unsigned int height() const;
 
-    void addEventListener(const std::string&, void (*proc)(const Event&));
+    // This is defined in the header because of the template?
+    template <typename F>
+    void addEventListener(const std::string& name, F&& proc)
+    {
+        if (m_handlers.find(name) == m_handlers.end())
+        {
+            m_handlers.insert(std::make_pair(name, std::vector<std::function<void(const Event&)>>()));
+        }
+
+        m_handlers.at(name).push_back(proc);
+    }
+
     void dispatchEvent(const std::string&, const Event&);
 
     int initialize();
@@ -47,6 +60,8 @@ public:
 
     sf::RenderWindow* _sfWindow() const;
 
+    sf::Font* _getFont(const std::string&);
+
 private:
     sf::RenderWindow* m_window;
 
@@ -54,7 +69,8 @@ private:
 
     Context m_context;
 
-    std::map<std::string, std::vector<void(*)(const Event&)>> m_handlers;
+    std::map<std::string, sf::Font*> m_fonts;
+    std::map<std::string, std::vector<std::function<void(const Event&)>>> m_handlers;
 
     std::function<void(Canvas&)> m_render;
     std::function<void(Canvas&)> m_update;
