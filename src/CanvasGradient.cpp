@@ -13,7 +13,7 @@ void CanvasGradient::setHeight(const float& height)
     _shader.setUniform("windowHeight", height);
 }
 
-sf::Shader* CanvasGradient::getShader(const CanvasGradient* gradient)
+sf::Shader* CanvasGradient::_getShader(const CanvasGradient* gradient)
 {
     _shader.setUniform("gradientStartPos", sf::Glsl::Vec2(gradient->m_start));
     _shader.setUniform("gradientEndPos", sf::Glsl::Vec2(gradient->m_end));

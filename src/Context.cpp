@@ -535,7 +535,7 @@ void Context::fillRect(float x, float y, float width, float height)
     }
     else
     {
-        m_canvas->_sfWindow()->draw(*m_rectangle, CanvasGradient::getShader(m_fillStyle.gradient));
+        m_canvas->_sfWindow()->draw(*m_rectangle, CanvasGradient::_getShader(m_fillStyle.gradient));
     }
 }
 
@@ -567,14 +567,14 @@ void Context::clearRect(float x, float y, float width, float height)
 
 void Context::drawImage(const Image& image, float dx, float dy)
 {
-    sf::Sprite* sprite = image.getSprite();
+    sf::Sprite* sprite = image._getSprite();
     sprite->setPosition(sf::Vector2f(dx, dy));
     m_canvas->_sfWindow()->draw(*sprite);
 }
 
 void Context::drawImage(const Image& image, float dx, float dy, float dWidth, float dHeight)
 {
-    sf::Sprite* sprite = image.getSprite();
+    sf::Sprite* sprite = image._getSprite();
 
     sprite->setPosition(sf::Vector2f(dx, dy));
 
@@ -586,7 +586,7 @@ void Context::drawImage(const Image& image, float dx, float dy, float dWidth, fl
 
 void Context::drawImage(const Image& image, float sx, float sy, float sWidth, float sHeight, float dx, float dy, float dWidth, float dHeight)
 {
-    sf::Sprite* sprite = image.getSprite();
+    sf::Sprite* sprite = image._getSprite();
 
     sf::IntRect rect = sprite->getTextureRect();
     sprite->setTextureRect(sf::IntRect(
@@ -624,7 +624,7 @@ void Context::fillText(const std::string& string, float x, float y)
     }
     else
     {
-        m_canvas->_sfWindow()->draw(*m_text, CanvasGradient::getShader(m_fillStyle.gradient));
+        m_canvas->_sfWindow()->draw(*m_text, CanvasGradient::_getShader(m_fillStyle.gradient));
     }
 }
 

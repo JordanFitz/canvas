@@ -8,7 +8,7 @@ Image::Image()
     m_texture = new sf::Texture();
 }
 
-Image::Image(const char* source) : Image()
+Image::Image(const std::string& source) : Image()
 {
     src(source);
 }
@@ -19,14 +19,20 @@ Image::~Image()
     delete m_texture;
 }
 
-void Image::src(const char* source)
+void Image::src(const std::string& source)
 {
+    m_source = source;
     m_texture = new sf::Texture();
-    m_texture->loadFromFile(source);
+    m_texture->loadFromFile(m_source);
     m_sprite->setTexture(*m_texture);
 }
 
-sf::Sprite* Image::getSprite() const
+std::string Image::src() const
+{
+    return m_source;
+}
+
+sf::Sprite* Image::_getSprite() const
 {
     return m_sprite;
 }

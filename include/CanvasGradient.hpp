@@ -55,7 +55,7 @@ class Context;
 class CanvasGradient
 {
 public:
-    static sf::Shader* getShader(const CanvasGradient*);
+    static sf::Shader* _getShader(const CanvasGradient*);
     static void setHeight(const float&);
 
     CanvasGradient();

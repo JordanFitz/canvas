@@ -403,7 +403,7 @@ void Path::fill(FillStyle style, sf::RenderWindow* window)
     }
     else
     {
-        window->draw(vertices, CanvasGradient::getShader(style.gradient));
+        window->draw(vertices, CanvasGradient::_getShader(style.gradient));
     }
 }
 
