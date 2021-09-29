@@ -127,7 +127,7 @@ int Canvas::initialize()
                 //       'Shift' up, then release [A] and get 'a' up. In this 
                 //       implementation, the keyup event will have the same modifier(s)
                 //       as the last keydown event for that key. I'm not sure how else
-                //       this could be done without implemtating craze key interpretation
+                //       this could be done without implementing crazy key interpretation
                 //       algorithms to generate the correct `key` string value. 
                 if (keysBuffer.find(event.key.code) != keysBuffer.end())
                 {
@@ -278,4 +278,10 @@ const std::string& Canvas::backgroundColor() const
 {
     return m_backgroundColor;
 }
+
+bool Canvas::_isKeyDown(const sf::Keyboard::Key& key) const
+{
+    return sf::Keyboard::isKeyPressed(key);
+}
+
 }

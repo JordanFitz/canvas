@@ -255,6 +255,117 @@ void KeyboardEvent::_setCode(sf::Keyboard::Key code)
     }
 }
 
+sfK::Key KeyboardEvent::codeToKey(const std::string& code)
+{
+    if (code == "KeyA") return sfK::A;
+    if (code == "KeyB") return sfK::B;
+    if (code == "KeyC") return sfK::C;
+    if (code == "KeyD") return sfK::D;
+    if (code == "KeyE") return sfK::E;
+    if (code == "KeyF") return sfK::F;
+    if (code == "KeyG") return sfK::G;
+    if (code == "KeyH") return sfK::H;
+    if (code == "KeyI") return sfK::I;
+    if (code == "KeyJ") return sfK::J;
+    if (code == "KeyK") return sfK::K;
+    if (code == "KeyL") return sfK::L;
+    if (code == "KeyM") return sfK::M;
+    if (code == "KeyN") return sfK::N;
+    if (code == "KeyO") return sfK::O;
+    if (code == "KeyP") return sfK::P;
+    if (code == "KeyQ") return sfK::Q;
+    if (code == "KeyR") return sfK::R;
+    if (code == "KeyS") return sfK::S;
+    if (code == "KeyT") return sfK::T;
+    if (code == "KeyU") return sfK::U;
+    if (code == "KeyV") return sfK::V;
+    if (code == "KeyW") return sfK::W;
+    if (code == "KeyX") return sfK::X;
+    if (code == "KeyY") return sfK::Y;
+    if (code == "KeyZ") return sfK::Z;
+
+    if (code == "Digit0") return sfK::Num0;
+    if (code == "Digit1") return sfK::Num1;
+    if (code == "Digit2") return sfK::Num2;
+    if (code == "Digit3") return sfK::Num3;
+    if (code == "Digit4") return sfK::Num4;
+    if (code == "Digit5") return sfK::Num5;
+    if (code == "Digit6") return sfK::Num6;
+    if (code == "Digit7") return sfK::Num7;
+    if (code == "Digit8") return sfK::Num8;
+    if (code == "Digit9") return sfK::Num9;
+
+    if (code == "F1") return sfK::F1;
+    if (code == "F2") return sfK::F2;
+    if (code == "F3") return sfK::F3;
+    if (code == "F4") return sfK::F4;
+    if (code == "F5") return sfK::F5;
+    if (code == "F6") return sfK::F6;
+    if (code == "F7") return sfK::F7;
+    if (code == "F8") return sfK::F8;
+    if (code == "F9") return sfK::F9;
+    if (code == "F10") return sfK::F10;
+    if (code == "F11") return sfK::F11;
+    if (code == "F12") return sfK::F12;
+    if (code == "F13") return sfK::F13;
+    if (code == "F14") return sfK::F14;
+    if (code == "F15") return sfK::F15;
+
+    if (code == "Escape") return sfK::Escape;
+    if (code == "ShiftLeft") return sfK::LShift;
+    if (code == "ShiftRight") return sfK::RShift;
+    if (code == "ControlLeft") return sfK::LControl;
+    if (code == "ControlRight") return sfK::RControl;
+    if (code == "AltLeft") return sfK::LAlt;
+    if (code == "AltRight") return sfK::RAlt;
+    if (code == "MetaLeft") return sfK::LSystem;
+    if (code == "MetaRight") return sfK::RSystem;
+    if (code == "ContextMenu") return sfK::Menu;
+    if (code == "BracketLeft") return sfK::LBracket;
+    if (code == "BracketRight") return sfK::RBracket;
+    if (code == "Semicolon") return sfK::Semicolon;
+    if (code == "Comma") return sfK::Comma;
+    if (code == "Period") return sfK::Period;
+    if (code == "Quote") return sfK::Quote;
+    if (code == "Slash") return sfK::Slash;
+    if (code == "Backslash") return sfK::Backslash;
+    if (code == "Backquote") return sfK::Tilde;
+    if (code == "Equal") return sfK::Equal;
+    if (code == "Minus") return sfK::Hyphen;
+    if (code == "Space") return sfK::Space;
+    if (code == "Enter") return sfK::Enter;
+    if (code == "Backspace") return sfK::Backspace;
+    if (code == "Tab") return sfK::Tab;
+    if (code == "PageUp") return sfK::PageUp;
+    if (code == "PageDown") return sfK::PageDown;
+    if (code == "End") return sfK::End;
+    if (code == "Home") return sfK::Home;
+    if (code == "Insert") return sfK::Insert;
+    if (code == "Delete") return sfK::Delete;
+    if (code == "NumpadAdd") return sfK::Add;
+    if (code == "NumpadSubtract") return sfK::Subtract;
+    if (code == "NumpadMultiply") return sfK::Multiply;
+    if (code == "NumpadDivide") return sfK::Divide;
+    if (code == "ArrowLeft") return sfK::Left;
+    if (code == "ArrowRight") return sfK::Right;
+    if (code == "ArrowUp") return sfK::Up;
+    if (code == "ArrowDown") return sfK::Down;
+    if (code == "Pause") return sfK::Pause;
+
+    if (code == "Numpad0") return sfK::Numpad0;
+    if (code == "Numpad1") return sfK::Numpad1;
+    if (code == "Numpad2") return sfK::Numpad2;
+    if (code == "Numpad3") return sfK::Numpad3;
+    if (code == "Numpad4") return sfK::Numpad4;
+    if (code == "Numpad5") return sfK::Numpad5;
+    if (code == "Numpad6") return sfK::Numpad6;
+    if (code == "Numpad7") return sfK::Numpad7;
+    if (code == "Numpad8") return sfK::Numpad8;
+    if (code == "Numpad9") return sfK::Numpad9;
+
+    return sfK::Unknown;
+}
+
 uint8_t MouseEvent::_getButton(sfM button)
 {
     switch (button)

@@ -39,7 +39,6 @@ public:
     void vsync(bool);
     bool vsync() const;
 
-    // This is defined in the header because of the template?
     template <typename F>
     void addEventListener(const std::string& name, F&& proc)
     {
@@ -67,6 +66,8 @@ public:
     sf::RenderWindow* _sfWindow() const;
 
     sf::Font* _getFont(const std::string&);
+
+    bool _isKeyDown(const sf::Keyboard::Key&) const;
 
 private:
     sf::RenderWindow* m_window;

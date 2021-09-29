@@ -402,7 +402,7 @@ sf::Text* Context::_parseFontString(std::string& fontString)
     }
 
     printf(
-        "Parsed font string: '%s' ->\n{\n\tsize=%d\n\tfamily=%s\n\tbold=%s\n\tunderlined=%s\n\titalic=%s\n}\n",
+        "Parsed font string: '%s' ->\n{\n  size=%d\n  family=%s\n  bold=%s\n  underlined=%s\n  italic=%s\n}\n",
         fontString.c_str(),
         size,
         family.c_str(),

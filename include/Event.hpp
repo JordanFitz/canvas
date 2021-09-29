@@ -47,6 +47,8 @@ public:
     std::string key() const;
     std::string code() const;
 
+    static sf::Keyboard::Key codeToKey(const std::string&);
+
 private:
     bool m_altKey, m_ctrlKey, m_shiftKey, m_metaKey;
 
