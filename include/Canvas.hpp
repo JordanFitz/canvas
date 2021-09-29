@@ -69,6 +69,8 @@ public:
 
     bool _isKeyDown(const sf::Keyboard::Key&) const;
 
+    void close() const;
+
 private:
     sf::RenderWindow* m_window;
 

@@ -39,6 +39,11 @@ Canvas::~Canvas()
         delete it->second;
 }
 
+void Canvas::close() const
+{
+    m_window->close();
+}
+
 void Canvas::loadFont(const std::string& name, const std::string& path)
 {
     if (m_fonts.find(name) != m_fonts.end())
