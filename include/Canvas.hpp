@@ -70,7 +70,9 @@ public:
     bool _isKeyDown(const sf::Keyboard::Key&) const;
 
     void close() const;
+
     void title(const std::string&);
+    const std::string& title() const;
 
 private:
     sf::RenderWindow* m_window;
@@ -87,6 +89,7 @@ private:
     std::function<void(Canvas&, float)> m_update;
 
     std::string m_backgroundColor;
+    std::string m_title;
 };
 }
 

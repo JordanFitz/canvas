@@ -20,14 +20,15 @@ Canvas::Canvas() :
     m_context(this),
     m_backgroundColor("white"),
     m_maxFramerate(0),
-    m_useVsync(false)
+    m_useVsync(false),
+    m_title("Canvas")
 {
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
 
     m_window = new sf::RenderWindow(
         sf::VideoMode(m_width, m_height),
-        "Canvas", sf::Style::Close, settings
+        m_title, sf::Style::Close, settings
     );
 }
 
@@ -46,7 +47,13 @@ void Canvas::close() const
 
 void Canvas::title(const std::string& title)
 {
-    m_window->setTitle(title);
+    m_title = title;
+    m_window->setTitle(m_title);
+}
+
+const std::string& Canvas::title() const
+{
+    return m_title;
 }
 
 void Canvas::loadFont(const std::string& name, const std::string& path)
