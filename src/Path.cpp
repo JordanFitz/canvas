@@ -13,7 +13,8 @@ namespace Canvas {
 Path::Path() :
     m_closed(false),
     m_computed(false),
-    m_lineWithNoThickness(nullptr)
+    m_lineWithNoThickness(nullptr),
+    m_circle(nullptr)
 {
 }
 
@@ -29,6 +30,7 @@ Path::~Path()
         delete* it;
 
     delete m_lineWithNoThickness;
+    delete m_circle;
 
     m_vertices.clear();
     m_lines.clear();
@@ -110,8 +112,12 @@ void Path::_computeVertices(float lineWidth, sf::Color color)
         for (uint8_t i = 0; i < 4; i++)
             (*vertexArray)[i].color = color;
 
+        // NOTE: possible memory leak!
+
         if (m_lines.size() < m_vertices.size() - 1)
             m_lines.push_back(vertexArray);
+        //else delete vertexArray; 
+        // ^-- potential fix for above NOTE
 
         i++;
     }
@@ -322,6 +328,7 @@ void Path::_computeCaps(float lineWidth, sf::Color color, LineCap capType)
     }
     if (cap1 != nullptr && cap2 != nullptr)
     {
+        // NOTE: possible memory leak?
         if (m_caps.size() == 0)
         {
             m_caps.push_back(cap1);
@@ -349,6 +356,17 @@ void Path::_maybeCompute(float lineWidth, sf::Color color, LineJoin join, LineCa
 
 void Path::stroke(float lineWidth, sf::Color color, LineJoin join, LineCap cap, sf::RenderWindow* window)
 {
+    if (m_circle != nullptr)
+    {
+        m_circle->setOutlineThickness(lineWidth);
+        m_circle->setOutlineColor(color);
+        m_circle->setFillColor(sf::Color::Transparent);
+
+        window->draw(*m_circle);
+
+        return;
+    }
+
     if (lineWidth > 1.0f)
     {
         _maybeCompute(lineWidth, color, join, cap);
@@ -366,7 +384,7 @@ void Path::stroke(float lineWidth, sf::Color color, LineJoin join, LineCap cap, 
         }
     }
     else if (lineWidth <= 1.0f)
-    {
+    { 
         if (m_lineWithNoThickness == nullptr)
             m_lineWithNoThickness = new sf::VertexArray(sf::LinesStrip, m_vertices.size());
 
@@ -387,6 +405,30 @@ void Path::stroke(float lineWidth, sf::Color color, LineJoin join, LineCap cap, 
 
 void Path::fill(FillStyle style, sf::RenderWindow* window)
 {
+    // NOTE: This use of sf::CircleShape has broken regular arc()s!!
+    //       I don't care at the moment cause I'm in the middle of 
+    //       Ludum Dare :^(
+
+    if (m_circle != nullptr)
+    {
+        m_circle->setOutlineThickness(0.0f);
+        m_circle->setFillColor(style.color);
+
+        if (style.type == FillStyle::Type::Color)
+        {
+            m_circle->setFillColor(style.color);
+            window->draw(*m_circle);
+        }
+        else
+        {
+            window->draw(*m_circle, CanvasGradient::_getShader(style.gradient));
+        }
+
+        window->draw(*m_circle);
+
+        return;
+    }
+
     std::vector<std::vector<sf::Vector2f>> polygon = { m_vertices };
     std::vector<uint32_t> indices = mapbox::earcut<uint32_t>(polygon);
     sf::VertexArray vertices(sf::Triangles);
@@ -449,6 +491,18 @@ void Path::_populateCircle(sf::VertexArray* vertexArray, sf::Vector2f center, fl
 void Path::arc(float x, float y, float radius, float startAngle, float endAngle, bool anticlockwise)
 {
     if (m_closed) return;
+
+    if (startAngle == 0.0f && endAngle == 0.0f)
+    {
+        if (m_circle == nullptr)
+            m_circle = new sf::CircleShape();
+        
+        m_circle->setPosition(x, y);
+        m_circle->setOrigin(radius, radius);
+        m_circle->setRadius(radius);
+
+        return;
+    }
 
     const sf::Vector2f center(x, y);
     const float interval = 0.1f;

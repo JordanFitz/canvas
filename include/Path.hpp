@@ -49,6 +49,7 @@ private:
     std::vector<sf::VertexArray*> m_caps;
 
     sf::VertexArray* m_lineWithNoThickness;
+    sf::CircleShape* m_circle;
 
     bool m_closed;
     bool m_computed;
