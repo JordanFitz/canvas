@@ -8,6 +8,7 @@ namespace Canvas
 class Audio
 {
 public:
+    Audio(bool useStream = false);
     Audio(const std::string&, bool useStream = false);
     ~Audio();
 

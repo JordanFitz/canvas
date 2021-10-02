@@ -2,6 +2,12 @@
 
 namespace Canvas
 {
+Audio::Audio(bool useStream) :
+    m_stream(useStream)
+{
+
+}
+
 Audio::Audio(const std::string& source, bool useStream) :
     m_source(source),
     m_stream(useStream)
