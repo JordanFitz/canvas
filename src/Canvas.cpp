@@ -44,6 +44,11 @@ void Canvas::close() const
     m_window->close();
 }
 
+void Canvas::title(const std::string& title)
+{
+    m_window->setTitle(title);
+}
+
 void Canvas::loadFont(const std::string& name, const std::string& path)
 {
     if (m_fonts.find(name) != m_fonts.end())
@@ -257,7 +262,6 @@ unsigned int Canvas::height() const
 }
 
 //void Canvas::addEventListener(const std::string& type, void (*handler)(const Event&))
-
 
 void Canvas::dispatchEvent(const std::string& type, const Event& event)
 {

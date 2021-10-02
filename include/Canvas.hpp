@@ -70,6 +70,7 @@ public:
     bool _isKeyDown(const sf::Keyboard::Key&) const;
 
     void close() const;
+    void title(const std::string&);
 
 private:
     sf::RenderWindow* m_window;
