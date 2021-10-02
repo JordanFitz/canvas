@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Audio.cpp" />
     <ClCompile Include="src\Canvas.cpp" />
     <ClCompile Include="src\Context.cpp" />
     <ClCompile Include="src\CanvasGradient.cpp" />
@@ -153,6 +154,7 @@
     <ClCompile Include="src\Path.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Audio.hpp" />
     <ClInclude Include="include\Canvas.hpp" />
     <ClInclude Include="include\Context.hpp" />
     <ClInclude Include="include\CanvasGradient.hpp" />
