@@ -15,263 +15,310 @@
 #define CURRENT_PATH m_paths.at(m_pathCount - 1)
 
 namespace Canvas {
-sf::Color Context::_parseColor(std::string style)
+void Context::_cacheColor(const char* name, uint32_t value)
+{
+    char* allocated = static_cast<char*>(calloc(strlen(name) + 1, sizeof(char)));
+    if (allocated)
+    {
+        memcpy(allocated, name, strlen(name) + 1);
+        char* trimmed = Util::trim(allocated);
+        m_colorCache.insert(std::make_pair(trimmed, value));
+    }
+}
+
+void Context::_cacheDefaultColors()
+{
+    _cacheColor("lightsalmon", Util::encodeColor(255, 160, 122));
+    _cacheColor("salmon", Util::encodeColor(250, 128, 114));
+    _cacheColor("darksalmon", Util::encodeColor(233, 150, 122));
+    _cacheColor("lightcoral", Util::encodeColor(240, 128, 128));
+    _cacheColor("indianred", Util::encodeColor(205, 92, 92));
+    _cacheColor("crimson", Util::encodeColor(220, 20, 60));
+    _cacheColor("firebrick", Util::encodeColor(178, 34, 34));
+    _cacheColor("red", Util::encodeColor(255, 0, 0));
+    _cacheColor("darkred", Util::encodeColor(139, 0, 0));
+    _cacheColor("coral", Util::encodeColor(255, 127, 80));
+    _cacheColor("tomato", Util::encodeColor(255, 99, 71));
+    _cacheColor("orangered", Util::encodeColor(255, 69, 0));
+    _cacheColor("gold", Util::encodeColor(255, 215, 0));
+    _cacheColor("orange", Util::encodeColor(255, 165, 0));
+    _cacheColor("darkorange", Util::encodeColor(255, 140, 0));
+    _cacheColor("lightyellow", Util::encodeColor(255, 255, 224));
+    _cacheColor("lemonchiffon", Util::encodeColor(255, 250, 205));
+    _cacheColor("lightgoldenrodyellow", Util::encodeColor(250, 250, 210));
+    _cacheColor("papayawhip", Util::encodeColor(255, 239, 213));
+    _cacheColor("moccasin", Util::encodeColor(255, 228, 181));
+    _cacheColor("peachpuff", Util::encodeColor(255, 218, 185));
+    _cacheColor("palegoldenrod", Util::encodeColor(238, 232, 170));
+    _cacheColor("khaki", Util::encodeColor(240, 230, 140));
+    _cacheColor("darkkhaki", Util::encodeColor(189, 183, 107));
+    _cacheColor("yellow", Util::encodeColor(255, 255, 0));
+    _cacheColor("lawngreen", Util::encodeColor(124, 252, 0));
+    _cacheColor("chartreuse", Util::encodeColor(127, 255, 0));
+    _cacheColor("limegreen", Util::encodeColor(50, 205, 50));
+    _cacheColor("lime", Util::encodeColor(0, 255, 0));
+    _cacheColor("forestgreen", Util::encodeColor(34, 139, 34));
+    _cacheColor("green", Util::encodeColor(0, 128, 0));
+    _cacheColor("darkgreen", Util::encodeColor(0, 100, 0));
+    _cacheColor("greenyellow", Util::encodeColor(173, 255, 47));
+    _cacheColor("yellowgreen", Util::encodeColor(154, 205, 50));
+    _cacheColor("springgreen", Util::encodeColor(0, 255, 127));
+    _cacheColor("mediumspringgreen", Util::encodeColor(0, 250, 154));
+    _cacheColor("lightgreen", Util::encodeColor(144, 238, 144));
+    _cacheColor("palegreen", Util::encodeColor(152, 251, 152));
+    _cacheColor("darkseagreen", Util::encodeColor(143, 188, 143));
+    _cacheColor("mediumseagreen", Util::encodeColor(60, 179, 113));
+    _cacheColor("seagreen", Util::encodeColor(46, 139, 87));
+    _cacheColor("olive", Util::encodeColor(128, 128, 0));
+    _cacheColor("darkolivegreen", Util::encodeColor(85, 107, 47));
+    _cacheColor("olivedrab", Util::encodeColor(107, 142, 35));
+    _cacheColor("lightcyan", Util::encodeColor(224, 255, 255));
+    _cacheColor("cyan", Util::encodeColor(0, 255, 255));
+    _cacheColor("aqua", Util::encodeColor(0, 255, 255));
+    _cacheColor("aquamarine", Util::encodeColor(127, 255, 212));
+    _cacheColor("mediumaquamarine", Util::encodeColor(102, 205, 170));
+    _cacheColor("paleturquoise", Util::encodeColor(175, 238, 238));
+    _cacheColor("turquoise", Util::encodeColor(64, 224, 208));
+    _cacheColor("mediumturquoise", Util::encodeColor(72, 209, 204));
+    _cacheColor("darkturquoise", Util::encodeColor(0, 206, 209));
+    _cacheColor("lightseagreen", Util::encodeColor(32, 178, 170));
+    _cacheColor("cadetblue", Util::encodeColor(95, 158, 160));
+    _cacheColor("darkcyan", Util::encodeColor(0, 139, 139));
+    _cacheColor("teal", Util::encodeColor(0, 128, 128));
+    _cacheColor("powderblue", Util::encodeColor(176, 224, 230));
+    _cacheColor("lightblue", Util::encodeColor(173, 216, 230));
+    _cacheColor("lightskyblue", Util::encodeColor(135, 206, 250));
+    _cacheColor("skyblue", Util::encodeColor(135, 206, 235));
+    _cacheColor("deepskyblue", Util::encodeColor(0, 191, 255));
+    _cacheColor("lightsteelblue", Util::encodeColor(176, 196, 222));
+    _cacheColor("dodgerblue", Util::encodeColor(30, 144, 255));
+    _cacheColor("cornflowerblue", Util::encodeColor(100, 149, 237));
+    _cacheColor("steelblue", Util::encodeColor(70, 130, 180));
+    _cacheColor("royalblue", Util::encodeColor(65, 105, 225));
+    _cacheColor("blue", Util::encodeColor(0, 0, 255));
+    _cacheColor("mediumblue", Util::encodeColor(0, 0, 205));
+    _cacheColor("darkblue", Util::encodeColor(0, 0, 139));
+    _cacheColor("navy", Util::encodeColor(0, 0, 128));
+    _cacheColor("midnightblue", Util::encodeColor(25, 25, 112));
+    _cacheColor("mediumslateblue", Util::encodeColor(123, 104, 238));
+    _cacheColor("slateblue", Util::encodeColor(106, 90, 205));
+    _cacheColor("darkslateblue", Util::encodeColor(72, 61, 139));
+    _cacheColor("lavender", Util::encodeColor(230, 230, 250));
+    _cacheColor("thistle", Util::encodeColor(216, 191, 216));
+    _cacheColor("plum", Util::encodeColor(221, 160, 221));
+    _cacheColor("violet", Util::encodeColor(238, 130, 238));
+    _cacheColor("orchid", Util::encodeColor(218, 112, 214));
+    _cacheColor("fuchsia", Util::encodeColor(255, 0, 255));
+    _cacheColor("magenta", Util::encodeColor(255, 0, 255));
+    _cacheColor("mediumorchid", Util::encodeColor(186, 85, 211));
+    _cacheColor("mediumpurple", Util::encodeColor(147, 112, 219));
+    _cacheColor("blueviolet", Util::encodeColor(138, 43, 226));
+    _cacheColor("darkviolet", Util::encodeColor(148, 0, 211));
+    _cacheColor("darkorchid", Util::encodeColor(153, 50, 204));
+    _cacheColor("darkmagenta", Util::encodeColor(139, 0, 139));
+    _cacheColor("purple", Util::encodeColor(128, 0, 128));
+    _cacheColor("indigo", Util::encodeColor(75, 0, 130));
+    _cacheColor("pink", Util::encodeColor(255, 192, 203));
+    _cacheColor("lightpink", Util::encodeColor(255, 182, 193));
+    _cacheColor("hotpink", Util::encodeColor(255, 105, 180));
+    _cacheColor("deeppink", Util::encodeColor(255, 20, 147));
+    _cacheColor("palevioletred", Util::encodeColor(219, 112, 147));
+    _cacheColor("mediumvioletred", Util::encodeColor(199, 21, 133));
+    _cacheColor("white", Util::encodeColor(255, 255, 255));
+    _cacheColor("snow", Util::encodeColor(255, 250, 250));
+    _cacheColor("honeydew", Util::encodeColor(240, 255, 240));
+    _cacheColor("mintcream", Util::encodeColor(245, 255, 250));
+    _cacheColor("azure", Util::encodeColor(240, 255, 255));
+    _cacheColor("aliceblue", Util::encodeColor(240, 248, 255));
+    _cacheColor("ghostwhite", Util::encodeColor(248, 248, 255));
+    _cacheColor("whitesmoke", Util::encodeColor(245, 245, 245));
+    _cacheColor("seashell", Util::encodeColor(255, 245, 238));
+    _cacheColor("beige", Util::encodeColor(245, 245, 220));
+    _cacheColor("oldlace", Util::encodeColor(253, 245, 230));
+    _cacheColor("floralwhite", Util::encodeColor(255, 250, 240));
+    _cacheColor("ivory", Util::encodeColor(255, 255, 240));
+    _cacheColor("antiquewhite", Util::encodeColor(250, 235, 215));
+    _cacheColor("linen", Util::encodeColor(250, 240, 230));
+    _cacheColor("lavenderblush", Util::encodeColor(255, 240, 245));
+    _cacheColor("mistyrose", Util::encodeColor(255, 228, 225));
+    _cacheColor("gainsboro", Util::encodeColor(220, 220, 220));
+    _cacheColor("lightgray", Util::encodeColor(211, 211, 211));
+    _cacheColor("silver", Util::encodeColor(192, 192, 192));
+    _cacheColor("darkgray", Util::encodeColor(169, 169, 169));
+    _cacheColor("gray", Util::encodeColor(128, 128, 128));
+    _cacheColor("dimgray", Util::encodeColor(105, 105, 105));
+    _cacheColor("lightslategray", Util::encodeColor(119, 136, 153));
+    _cacheColor("slategray", Util::encodeColor(112, 128, 144));
+    _cacheColor("darkslategray", Util::encodeColor(47, 79, 79));
+    _cacheColor("black", Util::encodeColor(0, 0, 0));
+    _cacheColor("cornsilk", Util::encodeColor(255, 248, 220));
+    _cacheColor("blanchedalmond", Util::encodeColor(255, 235, 205));
+    _cacheColor("bisque", Util::encodeColor(255, 228, 196));
+    _cacheColor("navajowhite", Util::encodeColor(255, 222, 173));
+    _cacheColor("wheat", Util::encodeColor(245, 222, 179));
+    _cacheColor("burlywood", Util::encodeColor(222, 184, 135));
+    _cacheColor("tan", Util::encodeColor(210, 180, 140));
+    _cacheColor("rosybrown", Util::encodeColor(188, 143, 143));
+    _cacheColor("sandybrown", Util::encodeColor(244, 164, 96));
+    _cacheColor("goldenrod", Util::encodeColor(218, 165, 32));
+    _cacheColor("peru", Util::encodeColor(205, 133, 63));
+    _cacheColor("chocolate", Util::encodeColor(210, 105, 30));
+    _cacheColor("saddlebrown", Util::encodeColor(139, 69, 19));
+    _cacheColor("sienna", Util::encodeColor(160, 82, 45));
+    _cacheColor("brown", Util::encodeColor(165, 42, 42));
+}
+
+sf::Color Context::_parseColor(const char* raw)
 {
     auto result = sf::Color::Black;
 
-    Util::trim(style);
-
-    if (style.length() == 0)
+    char* rawColor = static_cast<char*>(
+        calloc(strlen(raw) + 1, sizeof(char))
+    );
+    
+    if (rawColor)
     {
+        memcpy(rawColor, raw, strlen(raw) + 1);
+    }
+    else
+    {
+        fprintf(stderr, "Failed to allocate memory for color string\n");
+        return result;
+    }
+    
+    char* trimmed = Util::trim(rawColor);
+
+    if (trimmed[0] == 0)
+    {
+        free(rawColor);
         return result;
     }
 
-    std::transform(style.begin(), style.end(), style.begin(), [](unsigned char c) {
-        return std::tolower(c);
-    });
-
-    if (style == "lightsalmon") return sf::Color(255, 160, 122);
-    if (style == "salmon") return sf::Color(250, 128, 114);
-    if (style == "darksalmon") return sf::Color(233, 150, 122);
-    if (style == "lightcoral") return sf::Color(240, 128, 128);
-    if (style == "indianred") return sf::Color(205, 92, 92);
-    if (style == "crimson") return sf::Color(220, 20, 60);
-    if (style == "firebrick") return sf::Color(178, 34, 34);
-    if (style == "red") return sf::Color(255, 0, 0);
-    if (style == "darkred") return sf::Color(139, 0, 0);
-    if (style == "coral") return sf::Color(255, 127, 80);
-    if (style == "tomato") return sf::Color(255, 99, 71);
-    if (style == "orangered") return sf::Color(255, 69, 0);
-    if (style == "gold") return sf::Color(255, 215, 0);
-    if (style == "orange") return sf::Color(255, 165, 0);
-    if (style == "darkorange") return sf::Color(255, 140, 0);
-    if (style == "lightyellow") return sf::Color(255, 255, 224);
-    if (style == "lemonchiffon") return sf::Color(255, 250, 205);
-    if (style == "lightgoldenrodyellow") return sf::Color(250, 250, 210);
-    if (style == "papayawhip") return sf::Color(255, 239, 213);
-    if (style == "moccasin") return sf::Color(255, 228, 181);
-    if (style == "peachpuff") return sf::Color(255, 218, 185);
-    if (style == "palegoldenrod") return sf::Color(238, 232, 170);
-    if (style == "khaki") return sf::Color(240, 230, 140);
-    if (style == "darkkhaki") return sf::Color(189, 183, 107);
-    if (style == "yellow") return sf::Color(255, 255, 0);
-    if (style == "lawngreen") return sf::Color(124, 252, 0);
-    if (style == "chartreuse") return sf::Color(127, 255, 0);
-    if (style == "limegreen") return sf::Color(50, 205, 50);
-    if (style == "lime") return sf::Color(0, 255, 0);
-    if (style == "forestgreen") return sf::Color(34, 139, 34);
-    if (style == "green") return sf::Color(0, 128, 0);
-    if (style == "darkgreen") return sf::Color(0, 100, 0);
-    if (style == "greenyellow") return sf::Color(173, 255, 47);
-    if (style == "yellowgreen") return sf::Color(154, 205, 50);
-    if (style == "springgreen") return sf::Color(0, 255, 127);
-    if (style == "mediumspringgreen") return sf::Color(0, 250, 154);
-    if (style == "lightgreen") return sf::Color(144, 238, 144);
-    if (style == "palegreen") return sf::Color(152, 251, 152);
-    if (style == "darkseagreen") return sf::Color(143, 188, 143);
-    if (style == "mediumseagreen") return sf::Color(60, 179, 113);
-    if (style == "seagreen") return sf::Color(46, 139, 87);
-    if (style == "olive") return sf::Color(128, 128, 0);
-    if (style == "darkolivegreen") return sf::Color(85, 107, 47);
-    if (style == "olivedrab") return sf::Color(107, 142, 35);
-    if (style == "lightcyan") return sf::Color(224, 255, 255);
-    if (style == "cyan") return sf::Color(0, 255, 255);
-    if (style == "aqua") return sf::Color(0, 255, 255);
-    if (style == "aquamarine") return sf::Color(127, 255, 212);
-    if (style == "mediumaquamarine") return sf::Color(102, 205, 170);
-    if (style == "paleturquoise") return sf::Color(175, 238, 238);
-    if (style == "turquoise") return sf::Color(64, 224, 208);
-    if (style == "mediumturquoise") return sf::Color(72, 209, 204);
-    if (style == "darkturquoise") return sf::Color(0, 206, 209);
-    if (style == "lightseagreen") return sf::Color(32, 178, 170);
-    if (style == "cadetblue") return sf::Color(95, 158, 160);
-    if (style == "darkcyan") return sf::Color(0, 139, 139);
-    if (style == "teal") return sf::Color(0, 128, 128);
-    if (style == "powderblue") return sf::Color(176, 224, 230);
-    if (style == "lightblue") return sf::Color(173, 216, 230);
-    if (style == "lightskyblue") return sf::Color(135, 206, 250);
-    if (style == "skyblue") return sf::Color(135, 206, 235);
-    if (style == "deepskyblue") return sf::Color(0, 191, 255);
-    if (style == "lightsteelblue") return sf::Color(176, 196, 222);
-    if (style == "dodgerblue") return sf::Color(30, 144, 255);
-    if (style == "cornflowerblue") return sf::Color(100, 149, 237);
-    if (style == "steelblue") return sf::Color(70, 130, 180);
-    if (style == "royalblue") return sf::Color(65, 105, 225);
-    if (style == "blue") return sf::Color(0, 0, 255);
-    if (style == "mediumblue") return sf::Color(0, 0, 205);
-    if (style == "darkblue") return sf::Color(0, 0, 139);
-    if (style == "navy") return sf::Color(0, 0, 128);
-    if (style == "midnightblue") return sf::Color(25, 25, 112);
-    if (style == "mediumslateblue") return sf::Color(123, 104, 238);
-    if (style == "slateblue") return sf::Color(106, 90, 205);
-    if (style == "darkslateblue") return sf::Color(72, 61, 139);
-    if (style == "lavender") return sf::Color(230, 230, 250);
-    if (style == "thistle") return sf::Color(216, 191, 216);
-    if (style == "plum") return sf::Color(221, 160, 221);
-    if (style == "violet") return sf::Color(238, 130, 238);
-    if (style == "orchid") return sf::Color(218, 112, 214);
-    if (style == "fuchsia") return sf::Color(255, 0, 255);
-    if (style == "magenta") return sf::Color(255, 0, 255);
-    if (style == "mediumorchid") return sf::Color(186, 85, 211);
-    if (style == "mediumpurple") return sf::Color(147, 112, 219);
-    if (style == "blueviolet") return sf::Color(138, 43, 226);
-    if (style == "darkviolet") return sf::Color(148, 0, 211);
-    if (style == "darkorchid") return sf::Color(153, 50, 204);
-    if (style == "darkmagenta") return sf::Color(139, 0, 139);
-    if (style == "purple") return sf::Color(128, 0, 128);
-    if (style == "indigo") return sf::Color(75, 0, 130);
-    if (style == "pink") return sf::Color(255, 192, 203);
-    if (style == "lightpink") return sf::Color(255, 182, 193);
-    if (style == "hotpink") return sf::Color(255, 105, 180);
-    if (style == "deeppink") return sf::Color(255, 20, 147);
-    if (style == "palevioletred") return sf::Color(219, 112, 147);
-    if (style == "mediumvioletred") return sf::Color(199, 21, 133);
-    if (style == "white") return sf::Color(255, 255, 255);
-    if (style == "snow") return sf::Color(255, 250, 250);
-    if (style == "honeydew") return sf::Color(240, 255, 240);
-    if (style == "mintcream") return sf::Color(245, 255, 250);
-    if (style == "azure") return sf::Color(240, 255, 255);
-    if (style == "aliceblue") return sf::Color(240, 248, 255);
-    if (style == "ghostwhite") return sf::Color(248, 248, 255);
-    if (style == "whitesmoke") return sf::Color(245, 245, 245);
-    if (style == "seashell") return sf::Color(255, 245, 238);
-    if (style == "beige") return sf::Color(245, 245, 220);
-    if (style == "oldlace") return sf::Color(253, 245, 230);
-    if (style == "floralwhite") return sf::Color(255, 250, 240);
-    if (style == "ivory") return sf::Color(255, 255, 240);
-    if (style == "antiquewhite") return sf::Color(250, 235, 215);
-    if (style == "linen") return sf::Color(250, 240, 230);
-    if (style == "lavenderblush") return sf::Color(255, 240, 245);
-    if (style == "mistyrose") return sf::Color(255, 228, 225);
-    if (style == "gainsboro") return sf::Color(220, 220, 220);
-    if (style == "lightgray") return sf::Color(211, 211, 211);
-    if (style == "silver") return sf::Color(192, 192, 192);
-    if (style == "darkgray") return sf::Color(169, 169, 169);
-    if (style == "gray") return sf::Color(128, 128, 128);
-    if (style == "dimgray") return sf::Color(105, 105, 105);
-    if (style == "lightslategray") return sf::Color(119, 136, 153);
-    if (style == "slategray") return sf::Color(112, 128, 144);
-    if (style == "darkslategray") return sf::Color(47, 79, 79);
-    if (style == "black") return sf::Color(0, 0, 0);
-    if (style == "cornsilk") return sf::Color(255, 248, 220);
-    if (style == "blanchedalmond") return sf::Color(255, 235, 205);
-    if (style == "bisque") return sf::Color(255, 228, 196);
-    if (style == "navajowhite") return sf::Color(255, 222, 173);
-    if (style == "wheat") return sf::Color(245, 222, 179);
-    if (style == "burlywood") return sf::Color(222, 184, 135);
-    if (style == "tan") return sf::Color(210, 180, 140);
-    if (style == "rosybrown") return sf::Color(188, 143, 143);
-    if (style == "sandybrown") return sf::Color(244, 164, 96);
-    if (style == "goldenrod") return sf::Color(218, 165, 32);
-    if (style == "peru") return sf::Color(205, 133, 63);
-    if (style == "chocolate") return sf::Color(210, 105, 30);
-    if (style == "saddlebrown") return sf::Color(139, 69, 19);
-    if (style == "sienna") return sf::Color(160, 82, 45);
-    if (style == "brown") return sf::Color(165, 42, 42);
-
-    std::string originalStyle = style;
-
-    if (m_colorCache.find(style) != m_colorCache.end())
+    if (m_colorCache.find(rawColor) != m_colorCache.end())
     {
-        return m_colorCache.at(style);
+        result = Util::extractColor(m_colorCache.at(rawColor));
+        free(rawColor);
+        return result;
     }
 
     bool parsed = false;
 
-    if (style[0] == '#')
+    size_t trimmedLength = strlen(trimmed);
+
+    if (trimmed[0] == '#')
     {
-        if (style.length() == 9 || style.length() == 7 || style.length() == 4)
+        if (trimmedLength == 9 || trimmedLength == 7 || trimmedLength == 4)
         {
-            style = style.substr(1, 9);
-            if (style.length() == 3)
+            trimmed++;
+            trimmedLength--;
+            char* expandedColor = nullptr;
+
+            if (trimmedLength == 3)
             {
                 std::stringstream stream;
 
-                stream << style[0] << style[0];
-                stream << style[1] << style[1];
-                stream << style[2] << style[2];
+                expandedColor = static_cast<char*>(calloc(7, sizeof(char)));
 
-                style = stream.str();
+                expandedColor[0] = expandedColor[1] = trimmed[0];
+                expandedColor[2] = expandedColor[3] = trimmed[1];
+                expandedColor[4] = expandedColor[5] = trimmed[2];
+                expandedColor[6] = '\0';
+
+                trimmedLength = 6;
+                trimmed = expandedColor;
             }
 
-            sf::Uint8 components[4] = { 0, 0, 0, 255 };
+            uint8_t components[4] = { 0, 0, 0, 255 };
 
-            for (size_t i = 0; i < style.length(); i += 2)
+            for (size_t i = 0; i < trimmedLength; i += 2)
             {
-                std::string part = style.substr(i, 2);
-                sf::Uint8 component = static_cast<sf::Uint8>(std::stoul(part, nullptr, 16));
-                components[i / 2] = component;
+                char original = 0;
+
+                if (i < trimmedLength - 2)
+                {
+                    original = trimmed[2];
+                    trimmed[2] = '\0';
+                }
+
+                components[i / 2] = static_cast<uint8_t>(
+                    std::stoul(trimmed, nullptr, 16)
+                );
+
+                if (i < trimmedLength - 2)
+                {
+                    trimmed[2] = original;
+                }
+
+                trimmed += 2;
             }
 
-            parsed = true;
-            result = sf::Color(
-                components[0], components[1], components[2], components[3]
-            );
+            if (expandedColor)
+            {
+                free(expandedColor);
+            }
+
+             parsed = true;
+             result = sf::Color(
+                 components[0], components[1], components[2], components[3]
+             );
         }
     }
-    else if (style.rfind("rgb", 0) == 0)
+    // at least 9 chars for rgb(0,0,0) which should be the shortest possible rgb def
+    else if (trimmedLength > 9 && trimmed[0] == 'r' && trimmed[1] == 'g' && trimmed[2] == 'b')
     {
-        size_t startPosition = style.rfind("rgba", 0) == 0 ? 4 : 3;
+        size_t startPosition = trimmed[3] == 'a' ? 4 : 3;
 
-        style = style.substr(startPosition, style.size());
-        Util::trim(style);
+        trimmed += startPosition;
+        char* inner = Util::trim(trimmed);
+        size_t innerLength = strlen(inner);
 
-        if (style[0] == '(' && style[style.size() - 1] == ')')
+        if (inner[0] == '(' && inner[innerLength - 1] == ')')
         {
-            style = style.substr(1, style.size() - 2);
+            //style = style.substr(1, style.size() - 2);
 
-            sf::Uint8 components[] = { 0, 0, 0, 255 };
-            std::string part = "";
+            // Remove the surrounding ()
+            inner[innerLength - 1] = '\0';
+            inner++;
+            innerLength -= 2;
 
-            uint8_t i = 0;
-            for (auto it = style.begin(); it < style.end(); it++)
+            uint8_t components[] = { 0, 0, 0, 255 };
+
+            char* part;
+            char* end;
+
+            part = end = inner;
+
+            size_t componentIndex = 0;
+            for (size_t i = 0; i < innerLength; i++)
             {
-                if (i == 4)
+                // NOTE: This means that the only way for an rgba() color component to get parsed
+                //       as a double (i.e. the `a` component), is if that component is at the end
+                //       of the string. That should be fine, but I'm not sure if it might cause 
+                //       unexpected behavior on malformed rgba strings.
+                if (i == innerLength - 1)
                 {
-                    i = 0;
-                    part = "";
+                    components[componentIndex] = Util::stringToColorComponent(part, componentIndex == 3);
                     break;
                 }
 
-                if (*it != ',')
+                if (inner[i] == ',')
                 {
-                    part += *it;
-                }
-                else
-                {
-                    Util::trim(part);
+                    char c = inner[i];
+                    end[0] = '\0';
+                    
+                    components[componentIndex++] = Util::stringToColorComponent(part);
 
-                    if (i == 3)
-                    {
-                        double component = round(std::stod(part) * 255.0f);
-                        components[i] = static_cast<sf::Uint8>(component);
-                    }
-                    else
-                    {
-                        components[i] = static_cast<sf::Uint8>(std::stoi(part));
-                    }
-
-                    part = "";
-                    i++;
+                    part = inner + i + 1;
+                    end[0] = c;
                 }
+
+                end++;
             }
 
-            if (part.size() > 0)
-            {
-                Util::trim(part);
+            inner[innerLength] = ')';
+            inner--;
 
-                if (i == 3)
-                {
-                    double component = round(std::stod(part) * 255.0f);
-                    components[i] = static_cast<sf::Uint8>(component);
-                }
-                else
-                {
-                    components[i] = static_cast<sf::Uint8>(std::stoi(part));
-                }
-            }
-
-            if (i == 3 || i == 2)
+            if (componentIndex > 1)
             {
                 parsed = true;
                 result = sf::Color(
@@ -280,16 +327,17 @@ sf::Color Context::_parseColor(std::string style)
             }
         }
     }
+
     if (!parsed)
     {
-        fprintf(stderr, "Got an invalid color string: %s\n", originalStyle.c_str());
+        fprintf(stderr, "Got an invalid color string: %s\n", rawColor);
     }
 
-    printf("Cached color string %s as ", originalStyle.c_str());
+    printf("Cached color string %s as ", rawColor);
     Util::printColor(result, "\n");
 
     m_colorCache.insert(
-        std::pair<std::string, sf::Color>(originalStyle, result)
+        std::make_pair(rawColor, Util::encodeColor(result))
     );
 
     return result;
@@ -453,9 +501,12 @@ Context::Context(Canvas* canvas) :
     m_lineJoin(LineJoin::Miter),
     m_lineCapString("butt"),
     m_lineCap(LineCap::Butt),
-    m_pathCount(0)
+    m_pathCount(0),
+    m_text(nullptr)
 {
     m_rectangle = new sf::RectangleShape();
+
+    _cacheDefaultColors();
 
     fillStyle("black");
     strokeStyle("black");
@@ -463,13 +514,30 @@ Context::Context(Canvas* canvas) :
 
 Context::~Context()
 {
-    delete m_rectangle;
+    if (m_rectangle)
+        delete m_rectangle;
+
+    if (m_fillStyleString)
+        free(m_fillStyleString);
+
+    if (m_strokeStyle)
+        free(m_strokeStyle);
 
     for (auto it = m_texts.begin(); it != m_texts.end(); it++)
         delete it->second;
 
     for (auto it = m_paths.begin(); it < m_paths.end(); it++)
         delete* it;
+
+    for (auto it = m_colorCache.begin(); it != m_colorCache.end(); it++)    
+    { 
+        // The pre-cached colors are all alphabetical. Any other colors
+        // will be either in the form #BEEFED or rgb()/rgba().
+        if (!Util::isAlphabetical(it->first))
+        {
+            free(it->first);
+        }
+    }
 }
 
 void Context::font(const std::string& fontString)
@@ -483,14 +551,24 @@ const std::string& Context::font() const
     return m_fontString;
 }
 
-const std::string& Context::fillStyle() const
+const char* Context::fillStyle() const
 {
     return m_fillStyleString;
 }
 
-void Context::fillStyle(const std::string& newStyle)
+void Context::fillStyle(const char* newStyle)
 {
-    m_fillStyleString = newStyle;
+    if (m_fillStyleString)
+    {
+        free(m_fillStyleString);
+    }
+
+    m_fillStyleString = static_cast<char*>(calloc(strlen(newStyle) + 1, sizeof(char)));
+    if (m_fillStyleString)
+    {
+        memcpy(m_fillStyleString, newStyle, strlen(newStyle) + 1);
+    }
+
     m_fillStyle.type = FillStyle::Type::Color;
     m_fillStyle.color = _parseColor(newStyle);
 }
@@ -501,15 +579,25 @@ void Context::fillStyle(const CanvasGradient& gradient)
     m_fillStyle.gradient = &gradient;
 }
 
-const std::string& Context::strokeStyle() const
+const char* Context::strokeStyle() const
 {
     return m_strokeStyle;
 }
 
-void Context::strokeStyle(const std::string& newStyle)
-{
-    m_strokeStyle = newStyle;
-    m_strokeColor = _parseColor(m_strokeStyle);
+void Context::strokeStyle(const char* newStyle)
+{    
+    if (m_strokeStyle)
+    {
+        free(m_strokeStyle);
+    }
+
+    m_strokeStyle = static_cast<char*>(calloc(strlen(newStyle) + 1, sizeof(char)));
+    if (m_strokeStyle)
+    {
+        memcpy(m_strokeStyle, newStyle, strlen(newStyle) + 1);
+    }
+
+    m_strokeColor = _parseColor(newStyle);
 }
 
 void Context::lineWidth(float newWidth)
@@ -552,7 +640,7 @@ void Context::strokeRect(float x, float y, float width, float height)
 
 void Context::clearRect()
 {
-    auto color = _parseColor(m_canvas->backgroundColor());
+    auto color = _parseColor(m_canvas->backgroundColor().c_str());
     m_canvas->_sfWindow()->clear(color);
 }
 
@@ -560,7 +648,11 @@ void Context::clearRect(float x, float y, float width, float height)
 {
     auto fs = fillStyle();
 
-    fillStyle(m_canvas->backgroundColor());
+    char* backgroundColor = static_cast<char*>(
+        calloc(m_canvas->backgroundColor().size() + 1, sizeof(char))
+    );
+
+    fillStyle(m_canvas->backgroundColor().c_str());
     fillRect(x, y, width, height);
     fillStyle(fs);
 }

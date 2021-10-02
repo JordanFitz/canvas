@@ -26,6 +26,14 @@ struct FillStyle
     const CanvasGradient* gradient;
 };
 
+struct StringCompare
+{
+    bool operator()(char* a, char* b) const
+    {
+        return strcmp(a, b) < 0;
+    }
+};
+
 class Context
 {
 public:
@@ -34,11 +42,11 @@ public:
 
     void fillStyle(const CanvasGradient&);
 
-    void fillStyle(const std::string&);
-    const std::string& fillStyle() const;
+    void fillStyle(const char*);
+    const char* fillStyle() const;
 
-    void strokeStyle(const std::string&);
-    const std::string& strokeStyle() const;
+    void strokeStyle(const char*);
+    const char* strokeStyle() const;
 
     void lineWidth(float);
     float lineWidth() const;
@@ -78,17 +86,21 @@ public:
     TextMetrics measureText(const std::string&);
     CanvasGradient createLinearGradient(float, float, float, float);
 
-    sf::Color _parseColor(std::string);
+    sf::Color _parseColor(const char*);
+    void _cacheDefaultColors();
+    void _cacheColor(const char*, uint32_t);
 
 private:
     Canvas* m_canvas;
 
     sf::RectangleShape* m_rectangle;
 
-    std::map<std::string, sf::Color> m_colorCache;
+    std::map<char*, uint32_t, StringCompare> m_colorCache;
     std::map<std::string, sf::Text*> m_texts;
 
-    std::string m_fillStyleString, m_strokeStyle;
+    char* m_fillStyleString;
+    char* m_strokeStyle;
+
     sf::Color m_strokeColor;
 
     std::string m_lineJoinString, m_lineCapString;
