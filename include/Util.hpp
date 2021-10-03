@@ -105,6 +105,11 @@ uint8_t stringToColorComponent(char* str, bool isFloating = false)
     {
         memcpy(copy, str, strlen(str) + 1);
     }
+    else
+    {
+        return 0;
+    }
+
     char* trimmed = trim(copy);
 
     uint8_t result = 0;

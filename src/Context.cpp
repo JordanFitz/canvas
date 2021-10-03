@@ -333,8 +333,10 @@ sf::Color Context::_parseColor(const char* raw)
         fprintf(stderr, "Got an invalid color string: %s\n", rawColor);
     }
 
+#ifdef _DEBUG
     printf("Cached color string %s as ", rawColor);
     Util::printColor(result, "\n");
+#endif
 
     m_colorCache.insert(
         std::make_pair(rawColor, Util::encodeColor(result))
@@ -449,6 +451,7 @@ sf::Text* Context::_parseFontString(std::string& fontString)
         }
     }
 
+#ifdef _DEBUG
     printf(
         "Parsed font string: '%s' ->\n{\n  size=%d\n  family=%s\n  bold=%s\n  underlined=%s\n  italic=%s\n}\n",
         fontString.c_str(),
@@ -458,6 +461,7 @@ sf::Text* Context::_parseFontString(std::string& fontString)
         underlined ? "true" : "false",
         italic ? "true" : "false"
     );
+#endif
 
     sf::Font* font;
     if ((font = m_canvas->_getFont(family)) != nullptr)
@@ -480,7 +484,9 @@ sf::Text* Context::_parseFontString(std::string& fontString)
 
         m_texts.insert(std::pair<std::string, sf::Text*>(fontString, text));
 
+#ifdef _DEBUG
         printf("Cached font string '%s'.\n", fontString.c_str());
+#endif
 
         return text;
     }
