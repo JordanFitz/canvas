@@ -22,6 +22,8 @@ public:
     void pause();
     void stop();
 
+    bool playing() const;
+
 private:
     sf::SoundBuffer m_buffer;
     sf::Sound m_sound;

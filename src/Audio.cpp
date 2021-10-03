@@ -101,4 +101,26 @@ void Audio::stop()
     }
 }
 
+bool Audio::playing() const
+{
+    if (!m_opened)
+    {
+        //TODO: Maybe have an error message/warning here?
+        return false;
+    }
+
+    sf::SoundStream::Status status;
+
+    if (m_stream)
+    {
+        status = m_music.getStatus();
+    }
+    else
+    {
+        status = m_sound.getStatus();
+    }
+
+    return status == sf::SoundStream::Status::Playing;
+}
+
 }
