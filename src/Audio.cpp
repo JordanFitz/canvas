@@ -123,4 +123,22 @@ bool Audio::playing() const
     return status == sf::SoundStream::Status::Playing;
 }
 
+float Audio::volume() const
+{
+    if (!m_opened) return -1.0f;
+
+    if (m_stream)
+        return m_music.getVolume();
+    else return m_sound.getVolume();
+}
+
+void Audio::volume(float value)
+{
+    if (!m_opened) return;
+
+    if (m_stream)
+        m_music.setVolume(value);
+    else m_sound.setVolume(value);
+}
+
 }

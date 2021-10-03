@@ -15,6 +15,9 @@ public:
     void src(const std::string&);
     const std::string& src() const;
 
+    void volume(float);
+    float volume() const;
+
     void stream(bool);
     bool stream() const;
 
