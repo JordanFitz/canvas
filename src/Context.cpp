@@ -502,7 +502,9 @@ Context::Context(Canvas* canvas) :
     m_lineCapString("butt"),
     m_lineCap(LineCap::Butt),
     m_pathCount(0),
-    m_text(nullptr)
+    m_text(nullptr),
+    m_fillStyleString(nullptr),
+    m_strokeStyle(nullptr)
 {
     m_rectangle = new sf::RectangleShape();
 
@@ -740,6 +742,12 @@ void Context::strokeText(const std::string& string, float x, float y)
 
 TextMetrics Context::measureText(const std::string& string)
 {
+    if (m_text == nullptr)
+    {
+        printf("Call to measureText() with no font set.");
+        return { 0 };
+    }
+
     m_text->setString(string);
     m_text->setOutlineThickness(0.0f);
     m_text->setFillColor(sf::Color::Transparent);

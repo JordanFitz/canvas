@@ -40,6 +40,36 @@ Canvas::~Canvas()
         delete it->second;
 }
 
+void Canvas::viewPosition(float x, float y)
+{
+    sf::Vector2f windowSize = sf::Vector2f(m_window->getSize());
+    sf::View view = m_window->getView();
+    sf::FloatRect viewport = view.getViewport();
+
+    view.setViewport(
+        sf::FloatRect(
+            x / windowSize.x,
+            y / windowSize.y,
+            viewport.width,
+            viewport.height
+        )
+    );
+
+    m_window->setView(view);
+}
+
+sf::Vector2f Canvas::viewPosition() const
+{
+    sf::Vector2f windowSize = sf::Vector2f(m_window->getSize());
+    sf::View view = m_window->getView();
+    sf::FloatRect viewport = view.getViewport();
+
+    return sf::Vector2f(
+        viewport.left * windowSize.x,
+        viewport.top * windowSize.y
+    );
+}
+
 void Canvas::close() const
 {
     m_window->close();

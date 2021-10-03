@@ -74,6 +74,9 @@ public:
     void title(const std::string&);
     const std::string& title() const;
 
+    void viewPosition(float, float);
+    sf::Vector2f viewPosition() const;
+
 private:
     sf::RenderWindow* m_window;
 
